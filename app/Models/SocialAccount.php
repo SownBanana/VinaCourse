@@ -13,6 +13,6 @@ class SocialAccount extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Account');
+        return $this->belongsTo('App\Models\Account');
     }
 }

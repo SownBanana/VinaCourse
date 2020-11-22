@@ -17,11 +17,11 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username');
+            $table->string('username')->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('confirmation_code')->nullable();
             $table->boolean('is_verified')->default(false);
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->unsignedInteger('role')->default(UserRole::Student);
             $table->rememberToken();
             $table->timestamps();

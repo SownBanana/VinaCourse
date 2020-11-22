@@ -39,7 +39,7 @@
 <div class="bg-body pt-32pt pb-32pt pb-md-64pt text-center">
     <div class="container page__container">
         <a href="/redirect/facebook" class="btn btn-secondary btn-block-xs"id="su_facebook">Facebook</a>
-        <a href="index" class="btn btn-secondary btn-block-xs"id="su_github">Github</a>
+        <a href="/redirect/github" class="btn btn-secondary btn-block-xs"id="su_github">Github</a>
         <a href="/redirect/google" class="btn btn-secondary btn-block-xs" id="su_google">Google</a>
     </div>
 </div>

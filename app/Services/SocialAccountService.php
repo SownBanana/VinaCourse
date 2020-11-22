@@ -2,8 +2,8 @@
 namespace App\Services;
 
 use Laravel\Socialite\Contracts\User as ProviderUser;
-use App\SocialAccount;
-use App\Account;
+use App\Models\SocialAccount;
+use App\Models\Account;
 
 class SocialAccountService
 {
@@ -16,16 +16,23 @@ class SocialAccountService
         if ($account) {
             return $account->user;
         } else {
-            $email = $providerUser->getEmail() ?? $providerUser->getNickname();
+            $email = $providerUser->getEmail();
+            $username = $providerUser->getNickname();
             $account = new SocialAccount([
                 'provider_user_id' => $providerUser->getId(),
                 'provider' => $social
             ]);
             $user = Account::whereEmail($email)->first();
-
             if (!$user) {
-                $user = User::create([
+                $user = Account::where('username', $username)->first();
+                if ($user) {
+                    $username = "oauth_"+$username;
+                }
+            }
+            if (!$user) {
+                $user = Account::create([
                     'email' => $email,
+                    'username' => $username,
                     'name' => $providerUser->getName(),
                     'password' => $providerUser->getName(),
                 ]);

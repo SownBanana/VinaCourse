@@ -101,14 +101,15 @@ function validateForm() {
     if (!isPassConfirmed("password", "repassword")) {
         validated = false;
     }
-    debugger
-    if(!validated) alert("Vui lòng điền đúng các thông tin!");
+    if(!validated) {
+        alert("Vui lòng điền đúng các thông tin!");
+    }
     if (!$('#policy').is(':checked')) {
         validated = false;
         alert("Bạn phải chấp nhận các điều khoản của chúng tôi để đăng ký");
         return validated;
     }
-    $('.mask').removeClass("hidden");
+    if(validated) wait_server();
     return validated;
 }
 

@@ -150,7 +150,7 @@
 
                     <ul class="nav navbar-nav ml-auto mr-0">
                         <li class="nav-item">
-                            <a href="fixed-login" class="nav-link" data-toggle="tooltip" data-title="Login" data-placement="bottom" data-boundary="window"><i class="material-icons">lock_open</i></a>
+                        <a href="{{ route('login') }}" class="nav-link" data-toggle="tooltip" data-title="Login" data-placement="bottom" data-boundary="window"><i class="material-icons">lock_open</i></a>
                         </li>
                         <li class="nav-item">
                             <a href="fixed-signup" class="btn btn-outline-white">Get Started</a>

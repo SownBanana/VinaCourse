@@ -88,7 +88,7 @@ class AccountController extends Controller
             $account->role = UserRole::Instructor;
         }
         $account->save();
-        dispatch(new SendVerifyEmail($account));
+        dispatch(new SendVerifyEmail($account))->onQueue('verify_mail');
         Session::put("register_success", $request->username." đã đăng ký thành công");
     }
 
@@ -195,18 +195,18 @@ class AccountController extends Controller
         return view('application.account.signup-payment');
     }
     
-    public function change_password($code)
+    public function change_password(Request $request)
     {
-        return view('application.account.change-password', ['code'=>$code]);
+        return view('application.account.reset-password', ['code'=>$request->code]);
     }
     public function post_change_password(Request $request)
     {
-        $account = Account::where('confirmation_code', $request->code);
-        if ($account->count() > 0) {
-            $account->update([
-                'password' => $request->password,
-                'confirmation_code' => null
-            ]);
+        $account = Account::where('confirmation_code', $request->code)->first();
+        if ($account) {
+            $account->password = Hash::make($request->password);
+            $account->confirmation_code = null;
+            $account->save();
+            Auth::login($account, true);
             return redirect()->route('home');
         } else {
             $notification_status ='Đường dẫn hết hạn';
@@ -228,7 +228,7 @@ class AccountController extends Controller
             $confirmation_code = time().uniqid(true);
             $account->confirmation_code = $confirmation_code;
             $account->save();
-            dispatch(new SendResetPasswordEmail($account));
+            dispatch(new SendResetPasswordEmail($account))->onQueue('rspassword_mail');
             // $data['confirmation_code'] = $account->confirmation_code;
             // Mail::send('application.account.email.reset', $data, function ($message) use ($account) {
             //     $message->to($account->email, $account->name)

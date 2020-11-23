@@ -4,13 +4,13 @@
 <div class="page-section pb-0">
     <div class="container page__container d-flex flex-column flex-sm-row align-items-sm-center">
         <div class="flex">
-            <h1 class="h2 mb-0">Reset Password</h1>
-            <p class="text-breadcrumb">Account Management</p>
+            <h1 class="h2 mb-0">Đổi mật khẩu</h1>
+            {{-- <p class="text-breadcrumb">Account Management</p> --}}
         </div>
         <p class="d-sm-none"></p>
         <a href="" class="btn btn-outline-secondary flex-column">
-            Need Help?
-            <span class="btn__secondary-text">Contact us</span>
+            Cần giúp đỡ?
+            <span class="btn__secondary-text">Liên hệ</span>
         </a>
     </div>
 </div>
@@ -18,7 +18,7 @@
 <div class="page-section">
     <div class="container page__container">
         <div class="page-separator">
-            <div class="page-separator__text">Reset Password</div>
+            <div class="page-separator__text">Nhập mật khẩu mới của bạn</div>
         </div>
 
     <form action="{{ route('post_change_password') }}" method="post">
@@ -40,6 +40,5 @@
         <button onclick="return validateForm()" class="btn btn-primary" type="submit" name="submit">Đổi mật khẩu</button>
     </form>
     </div>
-</div>
 </div>
 @endsection

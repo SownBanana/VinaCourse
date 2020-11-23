@@ -70,7 +70,8 @@ input.invalid:focus {
 	height: 3.5rem !important;
 	position: fixed;
     top: 35%;
-    left: 50%;
+	left: 50%;
+	margin-left: -1.75rem;
 }
 button.text-btn{
 	border: none;

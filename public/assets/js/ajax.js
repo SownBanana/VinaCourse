@@ -57,7 +57,6 @@ $(document).ready(function() {
 showAlert();
 stop_wait_server();
 function handleLogin(msg) {
-    debugger
     console.log(msg[1]);
     if(msg[0] == 'success'){
         window.location.replace(msg[1]);

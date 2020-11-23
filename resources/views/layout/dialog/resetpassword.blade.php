@@ -24,15 +24,16 @@
                     </div>
                 </div>
 
-                <form action="{{ route('forgot_password')}}">
+                <form>
+                    @csrf
                     <div class="form-group">
                         <label class="form-label">Email/Username:</label>
-                        <input type="text" class="form-control" placeholder="Email đăng ký hoặc username của bạn ...">
+                        <input id="email" type="text" class="form-control" placeholder="Email đăng ký hoặc username của bạn ...">
                         <small class="form-text text-muted">Chúng tôi sẽ gửi email hướng dẫn đổi mật khẩu cho
                             bạn.</small>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <button class="btn btn-primary" data-dismiss="alert" onclick="showAlert('.alert')">Đổi mật khẩu</button>
+                        <button id="resetPswdBtn" class="btn btn-primary" data-dismiss="alert">Đổi mật khẩu</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     </div>
                 </form>

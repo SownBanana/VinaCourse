@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Mail;
 use App\Jobs\SendVerifyEmail;
+use App\Jobs\SendResetPasswordEmail;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
@@ -155,8 +156,9 @@ class AccountController extends Controller
             }
             return response()->json(['error_verify', "Tài khoản chưa được xác thực."]);
         }
-        $user = Account::where('email', '=', $request->login)->first();
-        if ($user == null) {
+        if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
+            $user = Account::where('email', '=', $login_info)->first();
+        } else {
             $user = Account::where('username', '=', $request->login)->first();
         }
         if ($user == null) {
@@ -193,14 +195,48 @@ class AccountController extends Controller
         return view('application.account.signup-payment');
     }
     
-    public function change_password()
+    public function change_password($code)
     {
-        return view('application.account.change-password');
+        return view('application.account.change-password', ['code'=>$code]);
+    }
+    public function post_change_password(Request $request)
+    {
+        $account = Account::where('confirmation_code', $request->code);
+        if ($account->count() > 0) {
+            $account->update([
+                'password' => $request->password,
+                'confirmation_code' => null
+            ]);
+            return redirect()->route('home');
+        } else {
+            $notification_status ='Đường dẫn hết hạn';
+            return response(['error'=>true,'error-msg'=>$notification_status], 419);
+        }
     }
 
-    public function reset_password()
+    public function forgot_password(Request $request)
     {
-        return view('application.account.reset-password');
+        $login_info = $request->email;
+        if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
+            $account = Account::where('email', '=', $login_info)->first();
+        } else {
+            $account = Account::where('username', '=', $login_info)->first();
+        }
+        if ($account == null) {
+            return response()->json(['error', "Không tìm thấy thông tin đăng nhập."]);
+        } else {
+            $confirmation_code = time().uniqid(true);
+            $account->confirmation_code = $confirmation_code;
+            $account->save();
+            dispatch(new SendResetPasswordEmail($account));
+            // $data['confirmation_code'] = $account->confirmation_code;
+            // Mail::send('application.account.email.reset', $data, function ($message) use ($account) {
+            //     $message->to($account->email, $account->name)
+            //         ->subject('Đổi mật khẩu VinaCourse');
+            // });
+            return response()->json(['success', "Email hướng dẫn đổi mật khẩu đã được gửi cho bạn nếu email/username của bạn tồn tại
+            trong hệ thống."]);
+        }
     }
 
     public function edit_account()

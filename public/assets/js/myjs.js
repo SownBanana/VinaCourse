@@ -77,38 +77,43 @@ function borderInput(elementId, isValid){
 function validateForm() {
     //check variable
     var validated = true;
-
     //Check if username not null
-    if (isInputNull("name")) {
-        validated = false;
-    }
-    if (!isUsername("username")) {
-        validated = false;
-    }
+    if($('#name').length)
+        if (isInputNull("name")) {
+            validated = false;
+        }
+    if($('#username').length)
+        if (!isUsername("username")) {
+            validated = false;
+        }
     //Check email is valid
-    if (!isInputEmail("email")) {
-        validated = false;
-    }
+    if($('#email').length)
+        if (!isInputEmail("email")) {
+            validated = false;
+        }
     //Check phone is valid
-    // if (!isInputPhone("phone")) {
-    //     validated = false;
-    // }
+    if($('#phone').length)
+        if (!isInputPhone("phone")) {
+            validated = false;
+        }
     //Check is password valid
-    if (!isPasswordValid("password")) {
-        validated = false;
-    }
+    if($('#password').length)
+        if (!isPasswordValid("password")) {
+            validated = false;
+        }
     //Check password is confirmed
-    if (!isPassConfirmed("password", "repassword")) {
-        validated = false;
-    }
+    if($('#repassword').length)
+        if (!isPassConfirmed("password", "repassword")) {
+            validated = false;
+        }
     if(!validated) {
         alert("Vui lòng điền đúng các thông tin!");
     }
-    if (!$('#policy').is(':checked')) {
-        validated = false;
-        alert("Bạn phải chấp nhận các điều khoản của chúng tôi để đăng ký");
-        return validated;
-    }
+    if($('#policy').length)
+        if (!$('#policy').is(':checked')) {
+            validated = false;
+            alert("Bạn phải chấp nhận các điều khoản của chúng tôi để đăng ký");
+        }
     if(validated) wait_server();
     return validated;
 }
@@ -120,7 +125,8 @@ function stop_wait_server(){
     $('.mask').addClass("hidden");
 }
 
-function showAlert(alert){
+function showAlert(alert, msg){
+    console.log($(alert));
     $(alert).slideDown(200, function() {
         $(this).show();
     });

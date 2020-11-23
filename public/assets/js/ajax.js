@@ -7,7 +7,8 @@ $(document).ready(function() {
         var password = $("#password").val();
         var remember_me = $("#remember_me").val() == 'on';
         if(login == "" || password == ""){
-            // alert("Điền các trường còn thiếu");
+            alert("Điền thông tin đăng nhập");
+            stop_wait_server()
         }else{
             $.ajaxSetup({
                 headers: {
@@ -25,10 +26,35 @@ $(document).ready(function() {
                 },
             });
         }
-        });
-
     });
-
+    $("#resetPswdBtn").click(function(e) {
+        e.preventDefault();
+        var email = $("#email").val();
+        if(email == ""){
+            alert("Điền email/username của bạn");
+        }else{
+            $.ajaxSetup({
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $("input[name='_token']").val()
+                }
+            });
+            
+            $.ajax({
+                url: "/account/forgot-password",
+                type: "GET",
+                data: {email: email},
+                success: function (data) {
+                    showAlert('.alert', data[1]);
+                },
+                error: function (data){
+                    alert("error"+data);
+                }
+            });
+        }
+    });
+});
+showAlert();
 stop_wait_server();
 function handleLogin(msg) {
     debugger
@@ -43,14 +69,4 @@ function handleLogin(msg) {
         stop_wait_server();
         $('#passwordHelp').text(msg[1]);
     }
-    // if ($.isEmptyObject(msg.error)) {
-    //     console.log(msg.success);
-    //     $(".alert-block")
-    //         .css("display", "block")
-    //         .append("<strong>" + msg.success + "</strong>");
-    // } else {
-    //     $.each(msg.error, function (key, value) {
-    //         $("." + key + "_err").text(value);
-    //     });
-    // }
 }

@@ -35,6 +35,7 @@ class SocialAccountService
                     'username' => $username,
                     'name' => $providerUser->getName(),
                     'password' => $providerUser->getName(),
+                    'role' => 3,
                 ]);
             }
 

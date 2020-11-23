@@ -3,17 +3,16 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Mail;
 
-class SendVerifyEmail implements ShouldQueue
+class SendResetPasswordEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $account;
     /**
      * Create a new job instance.
      *
@@ -32,9 +31,9 @@ class SendVerifyEmail implements ShouldQueue
     public function handle()
     {
         $data['confirmation_code'] = $this->account->confirmation_code;
-        Mail::send('application.account.email.verify', $data, function ($message) {
+        Mail::send('application.account.email.reset', $data, function ($message) {
             $message->to($this->account->email, $this->account->name)
-                ->subject('Xác thực tài khoản VinaCourse');
+                ->subject('Đổi mật khẩu VinaCourse');
         });
     }
 }

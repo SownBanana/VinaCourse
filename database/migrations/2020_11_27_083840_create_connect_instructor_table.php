@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInstructorsTable extends Migration
+class CreateConnectInstructorTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateInstructorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('instructors', function (Blueprint $table) {
-            $table->integer('account_id')->primary();
-            $table->string('introduce')->nullable();
-            $table->string('bio')->nullable();
+        Schema::create('connect_instructor', function (Blueprint $table) {
+            $table->integer('instructor_id');
+            $table->integer('connect_id');
+            $table->string('link');
+            $table->string('display_text');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateInstructorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instructors');
+        Schema::dropIfExists('connect_instructor');
     }
 }

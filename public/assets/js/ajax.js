@@ -24,6 +24,10 @@ $(document).ready(function() {
                 success: function (data) {
                     handleLogin(data);
                 },
+                error: function (data){
+                    alert("Lỗi: "+data);
+                    stop_wait_server();
+                }
             });
         }
     });
@@ -45,27 +49,61 @@ $(document).ready(function() {
                 type: "GET",
                 data: {email: email},
                 success: function (data) {
-                    showAlert('.alert', data[1]);
+                    showAlert('.alert', data.mss);
                 },
                 error: function (data){
-                    alert("error"+data);
+                    alert("Lỗi: "+data.mss);
                 }
             });
         }
     });
+    
 });
+
+function sendVerify(ele, e){
+        debugger
+        e = e || window.event;
+        e.preventDefault();
+        wait_server();
+        var href = $('#verifyBtn').attr('href');
+        // $.ajaxSetup({
+        //     headers: {
+        //         // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         'X-CSRF-TOKEN': $("input[name='_token']").val()
+        //     }
+        // });
+        
+        $.ajax({
+            url: href,
+            type: "GET",
+            data: {},
+            success: function (data) {
+                alert(data.mss);
+                stop_wait_server();
+            },
+            error: function (data){
+                alert("Lỗi: "+data.mss);
+                stop_wait_server();
+            }
+        });
+}
 showAlert();
 stop_wait_server();
 function handleLogin(msg) {
-    console.log(msg[1]);
-    if(msg[0] == 'success'){
-        window.location.replace(msg[1]);
+    console.log(msg);
+    if(msg.status == 'success'){
+        window.location.replace(msg.mss);
         // window.location = msg[1];
-    }else if(msg[0] == 'error_info' || msg[0] == 'error_verify'){
+    }else if(msg.status == 'error_info'){
         stop_wait_server();
-        $('#usernameHelp').text(msg[1]);
-    }else {
+        $('#usernameHelp').text(msg.mss);
+    }else if(msg.status == 'error_verify'){
         stop_wait_server();
-        $('#passwordHelp').text(msg[1]);
+        $('#usernameHelp').text(msg.mss);
+        $('#usernameHelp').append("<a id='verifyBtn' onclick='sendVerify(this, event)' href='/account/send-verify/"+msg.email+"'>&nbsp Gửi lại email xác thực</a>");
+    }
+    else {
+        stop_wait_server();
+        $('#passwordHelp').text(msg.mss);
     }
 }

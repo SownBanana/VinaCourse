@@ -63,7 +63,10 @@
                         <label class="form-label" for="password">Nhập lại mật khẩu:</label>
                         <input id="repassword" type="password" class="form-control" onkeyup="isPassConfirmed('password','repassword')" placeholder="Nhập lại mật khẩu của bạn ...">
                     </div>
-                    <button onclick="return validateForm()" class="btn btn-primary" type="submit" name="submit">Tạo tài khoản</button>
+                    <div class="d-flex justify-content-between">
+                        <button onclick="return validateForm()" class="btn btn-primary" type="submit" name="submit">Tạo tài khoản</button>
+                        <label for="">Đã có tài khoản?<a href="{{route('login')}}">&nbspĐăng nhập &nbsp</a></label>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card mb-0">

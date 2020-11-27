@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Account;
+use App\Models\Instructor;
+use App\Models\Student;
+use App\Models\Admin;
 use App\Enums\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -86,30 +89,52 @@ class AccountController extends Controller
         $account->password = Hash::make($request->password);
         if ($request->role == 'instructor') {
             $account->role = UserRole::Instructor;
+            $user = new Instructor;
+        } else {
+            $user = new Student;
+            $account->role = UserRole::Student;
         }
         $account->save();
-        dispatch(new SendVerifyEmail($account))->onQueue('verify_mail');
+        $user->account()->associate($account);
+        $user->account_id = $account->id;
+        // $account->user()->associate($user);
+        $user->save();
+        dispatch(new SendVerifyEmail($account));
         Session::put("register_success", $request->username." đã đăng ký thành công");
     }
 
     public function verify($code)
     {
-        $account = Account::where('confirmation_code', $code);
-
-        if ($account->count() > 0) {
-            $account->update([
-                'is_verified' => true,
-                'confirmation_code' => null
-            ]);
-            $notification_status = 'Bạn đã xác nhận thành công';
-            // return redirect(route('login'))->with('account', $account);
-            // Session::flash('username', $account->username);
-            return redirect(route('login'));
+        $account = Account::where('confirmation_code', $code)->first();
+        if ($account) {
+            $account->is_verified = true;
+            $account->confirmation_code = null;
+            $account->save();
+            Auth::login($account, true);
+            return redirect()->route('home');
         } else {
             $notification_status ='Mã xác nhận không chính xác';
             return redirect(route('signup'))->with('status', $notification_status);
         }
     }
+
+    public function sendVerify($login_info)
+    {
+        if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
+            $account = Account::where('email', $login_info)->first();
+        } else {
+            $account = Account::where('username', $login_info)->first();
+        }
+        if ($account) {
+            $confirmation_code = time().uniqid(true);
+            $account->confirmation_code = $confirmation_code;
+            $account->save();
+            dispatch(new SendVerifyEmail($account));
+            return response()->json(['status'=>'success','mss'=>'Đã gửi email xác thực cho '.$account->email]);
+        }
+        return response()->json(['status'=>'error', 'mss'=>'Không tìm thấy thông tin đăng nhập '.$account->email]);
+    }
+
     public function policy()
     {
         return view('application.account.pricing');
@@ -146,15 +171,17 @@ class AccountController extends Controller
                 // Authentication passed...
                 $a = Auth::user()->role;
                 if (Auth::user()->role == UserRole::Instructor) {
-                    return response()->json(['success', route('instructor_dashboard', ['username' => Auth::user()->username])]);
+                    return response()->json(['status'=>'success', 'mss'=>route('instructor_dashboard', ['username' => Auth::user()->username])]);
                     // return redirect()->route('instructor_dashboard', ['username' => Auth::user()->username]);
                 }
                 if (Auth::user()->role == UserRole::Student) {
-                    return response()->json(['success', route('student_dashboard', ['username' => Auth::user()->username])]);
+                    return response()->json(['status'=>'success', 'mss'=>route('student_dashboard', ['username' => Auth::user()->username])]);
                     // return redirect()->route('student_dashboard', ['username' => Auth::user()->username]);
                 }
             }
-            return response()->json(['error_verify', "Tài khoản chưa được xác thực."]);
+            $email = Auth::user()->email;
+            Auth::logout();
+            return response()->json(['status'=>'error_verify', 'mss'=>"Tài khoản chưa được xác thực.", 'email'=>$email]);
         }
         if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
             $user = Account::where('email', '=', $login_info)->first();
@@ -162,9 +189,9 @@ class AccountController extends Controller
             $user = Account::where('username', '=', $request->login)->first();
         }
         if ($user == null) {
-            return response()->json(['error_info', "Không tìm thấy thông tin đăng nhập."]);
+            return response()->json(['status'=>'error_info', 'mss'=>"Không tìm thấy thông tin đăng nhập."]);
         } else {
-            return response()->json(['error_password', "Sai mật khẩu."]);
+            return response()->json(['status'=>'error_password', 'mss'=>"Sai mật khẩu."]);
         }
     }
 
@@ -223,18 +250,13 @@ class AccountController extends Controller
             $account = Account::where('username', '=', $login_info)->first();
         }
         if ($account == null) {
-            return response()->json(['error', "Không tìm thấy thông tin đăng nhập."]);
+            return response()->json(['status'=>'error', 'mss'=>"Không tìm thấy thông tin đăng nhập."]);
         } else {
             $confirmation_code = time().uniqid(true);
             $account->confirmation_code = $confirmation_code;
             $account->save();
-            dispatch(new SendResetPasswordEmail($account))->onQueue('rspassword_mail');
-            // $data['confirmation_code'] = $account->confirmation_code;
-            // Mail::send('application.account.email.reset', $data, function ($message) use ($account) {
-            //     $message->to($account->email, $account->name)
-            //         ->subject('Đổi mật khẩu VinaCourse');
-            // });
-            return response()->json(['success', "Email hướng dẫn đổi mật khẩu đã được gửi cho bạn nếu email/username của bạn tồn tại
+            dispatch(new SendResetPasswordEmail($account));
+            return response()->json(['status'=>'success', 'mss'=>"Email hướng dẫn đổi mật khẩu đã được gửi cho bạn nếu email/username của bạn tồn tại
             trong hệ thống."]);
         }
     }

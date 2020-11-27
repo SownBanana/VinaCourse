@@ -79,6 +79,7 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/signup', [AccountController::class, 'signup'])->name('signup');
     Route::post('/signup', [AccountController::class, 'postsignup'])->name('postsignup');
     Route::get('/verify/{code}', [AccountController::class, 'verify'])->name('verify');
+    Route::get('/send-verify/{email}', [AccountController::class, 'sendVerify']);
     Route::get('/signup-payment', [AccountController::class, 'signup_payment'])->name('signup_payment');
     Route::get('/forgot-password', [AccountController::class, 'forgot_password'])->name('forgot_password');
     Route::get('/change-password', [AccountController::class, 'change_password'])->name('change_password');

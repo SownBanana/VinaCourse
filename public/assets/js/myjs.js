@@ -126,7 +126,7 @@ function stop_wait_server(){
 }
 
 function showAlert(alert, msg){
-    console.log($(alert));
+    // console.log($(alert));
     $(alert).slideDown(200, function() {
         $(this).show();
     });

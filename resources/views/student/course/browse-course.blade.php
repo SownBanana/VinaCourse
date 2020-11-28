@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-bcourse', 'active')
 @section('content')
     <div class="page-section">

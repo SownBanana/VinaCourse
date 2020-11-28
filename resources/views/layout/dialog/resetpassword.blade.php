@@ -16,7 +16,7 @@
                             <i class="material-icons">check_circle</i>
                         </div>
                         <div class="flex" style="min-width: 180px">
-                            <small class="text-black-100">
+                            <small class="text-black-100 alert_content">
                                 Email hướng dẫn đổi mật khẩu đã được gửi cho bạn nếu email/username của bạn tồn tại
                                 trong hệ thống.
                             </small>

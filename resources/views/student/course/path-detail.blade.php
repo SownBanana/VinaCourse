@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-pathdetail', 'active')
 @section('content')
 <div class="mdk-box bg-primary mdk-box--bg-primary js-mdk-box mb-0" data-effects="blend-background">

@@ -1,4 +1,4 @@
-@extends('layout.instructor')
+@extends('layout.app')
 {{-- @section('menu_button', 'd-lg-none') --}}
 @section('content')
 <div class="pt-32pt">

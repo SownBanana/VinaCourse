@@ -21,4 +21,8 @@ class Course extends Model
     {
         return $this->belongsToMany('App\Models\Topic');
     }
+    public function sections()
+    {
+        return $this->hasMany('App\Models\Section');
+    }
 }

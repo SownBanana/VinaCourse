@@ -1,4 +1,4 @@
-@extends('layout.instructor')
+@extends('layout.app')
 @section('active-statement', 'active')
 @section('content')
 <div class="pt-32pt">

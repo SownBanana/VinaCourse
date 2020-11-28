@@ -1,4 +1,4 @@
-@extends('layout.instructor')
+@extends('layout.app')
 @section('active-manage_quiz', 'active')
 @section('content')
 <div class="pt-32pt">

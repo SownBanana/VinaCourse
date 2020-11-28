@@ -49,6 +49,7 @@ $(document).ready(function() {
                 type: "GET",
                 data: {email: email},
                 success: function (data) {
+                    console.log(data.mss);
                     showAlert('.alert', data.mss);
                 },
                 error: function (data){
@@ -58,10 +59,73 @@ $(document).ready(function() {
         }
     });
     
+    $('#saveCourse').click(function(e, course_id='new'){
+        e.preventDefault();
+        var course ={};
+        course.id = $("#edit_course").attr("course_id");
+        course.name = $('#course_name').val();
+        course.intro = $('#course_intro').val();
+        course.price = $('#course_price').val();
+        course.topic = [];
+        $('.topic_list .topic_item').each(function(e){
+            course.topic.push($(this).text().trim());
+        });
+        course.sections = [];
+        $('#parent .section').each(function(e){
+            var section = {};
+            section.name = $(this).find('.section_name').text();
+            section.lessons = [];
+            $(this).find('.lesson').each(function(e){
+                var lesson = {};
+                lesson.name = $(this).find('.lesson_name').text();
+                lesson.length = $(this).find('.lesson_length').text();
+                lesson.info = $(this).find('.lesson_info').val();
+                lesson.url = $(this).find('.lesson_url').val();
+                section.lessons.push(lesson);
+                // lesson = {};
+            });
+            section.quizzes = [];
+            $(this).find('.quiz').each(function(e){
+                var quiz = {};
+                quiz.name = $(this).find('.quiz_name').text();
+                quiz.question = $(this).find('.quiz_question').val();
+                quiz.answers = [];
+                $(this).find('.quiz_answer').each(function(e){
+                    var answer = {};
+                    answer.isAnswer = $(this).find('input.isAnswer').is(':checked');
+                    answer.content = $(this).find('input.ans_content').val();
+                    quiz.answers.push(answer);
+                })
+                section.quizzes.push(quiz);
+            });
+            course.sections.push(section);
+            // section = {};
+        });
+        console.log(course);
+        $.ajaxSetup({
+            headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $("input[name='_token']").val()
+            }
+        });
+        
+        $.ajax({
+            url: "/instructor/edit-course",
+            type: "POST",
+            data: {course: course},
+            success: function (data) {
+                handleLogin(data);
+            },
+            error: function (data){
+                alert("Lỗi: "+data);
+                stop_wait_server();
+            }
+        });
+    })
 });
 
 function sendVerify(ele, e){
-        debugger
+        // debugger
         e = e || window.event;
         e.preventDefault();
         wait_server();

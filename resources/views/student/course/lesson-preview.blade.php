@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-lessonpreview', 'active')
 @section('content')
     <div class="navbar navbar-light border-0 navbar-expand">

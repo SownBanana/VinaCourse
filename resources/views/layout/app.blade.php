@@ -32,7 +32,14 @@
         <!-- // END drawer-layout__content -->
 
         <!-- drawer -->
-        @yield('sidebar')
+        {{-- @yield('sidebar') --}}
+        @if (Auth::check())
+            @if (Auth::user()->role == 3)
+                @include('layout.sidebar.student')
+            @else
+                @include('layout.sidebar.instructor')
+            @endif
+        @endif
         <!-- // END drawer -->
 
     </div>

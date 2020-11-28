@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-mpath', 'active')
 @section('content')
 <div class="pt-32pt">

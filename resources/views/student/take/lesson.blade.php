@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-takelesson', 'active')
 @section('content')
 <div class="navbar navbar-light border-0 navbar-expand-sm" style="white-space: nowrap;">

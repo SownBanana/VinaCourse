@@ -28,36 +28,34 @@ Route::get('/{username}', [AccountController::class, 'getUser'])->name('get_user
 // Student router
 Route::group(['prefix' => 'student'], function () {
     Route::get('/{username}/dashboard', [StudentController::class, 'dashboard'])->name('student_dashboard');
-    Route::get('/{username}/course-preview', [StudentController::class, 'coursepreview']);
-    Route::get('/{username}/lesson-preview', [StudentController::class, 'lessonpreview']);
-    Route::get('/{username}/browse-course', [StudentController::class, 'browsecourse']);
-    Route::get('/{username}/browse-path', [StudentController::class, 'browsepath']);
-    Route::get('/{username}/my-course', [StudentController::class, 'mycourse']);
-    Route::get('/{username}/my-path', [StudentController::class, 'mypath']);
-    Route::get('/{username}/path-detail', [StudentController::class, 'pathdetail']);
+    Route::get('/course-preview', [StudentController::class, 'coursepreview']);
+    Route::get('/lesson-preview', [StudentController::class, 'lessonpreview']);
+    Route::get('/browse-course', [StudentController::class, 'browsecourse']);
+    Route::get('/browse-path', [StudentController::class, 'browsepath']);
+    Route::get('/my-course', [StudentController::class, 'mycourse']);
+    Route::get('/my-path', [StudentController::class, 'mypath']);
+    Route::get('/path-detail', [StudentController::class, 'pathdetail']);
     
-    Route::get('/{username}/take-course', [TakeController::class, 'takecourse']);
-    Route::get('/{username}/take-lession', [TakeController::class, 'takelesson']);
-    Route::get('/{username}/take-quiz', [TakeController::class, 'takequiz']);
-    Route::get('/{username}/my-quizzes', [TakeController::class, 'myquizzes']);
-    Route::get('/{username}/quiz-result', [TakeController::class, 'quizresult']);
+    Route::get('/take-course', [TakeController::class, 'takecourse']);
+    Route::get('/take-lession', [TakeController::class, 'takelesson']);
+    Route::get('/take-quiz', [TakeController::class, 'takequiz']);
+    Route::get('/my-quizzes', [TakeController::class, 'myquizzes']);
+    Route::get('/quiz-result', [TakeController::class, 'quizresult']);
     
-    Route::get('/{username}/skill-assessment', [SkillController::class, 'skillassessment']);
-    Route::get('/{username}/skill-result', [SkillController::class, 'skillresult']);
+    Route::get('/skill-assessment', [SkillController::class, 'skillassessment']);
+    Route::get('/skill-result', [SkillController::class, 'skillresult']);
 });
 
 // Instructor router
 Route::group(['prefix' => 'instructor'], function () {
-    Route::get('/{username}', [InstructorController::class, 'dashboard']);
     Route::get('/{username}/dashboard', [InstructorController::class, 'dashboard'])->name('instructor_dashboard');
-    Route::get('/{username}/manage-courses', [InstructorController::class, 'manage_courses']);
-    Route::get('/{username}/manage-quizzes', [InstructorController::class, 'manage_quizzes']);
-    Route::get('/{username}/earning', [InstructorController::class, 'earning']);
-    Route::get('/{username}/statement', [InstructorController::class, 'statement']);
-    Route::get('/{username}/edit-course', [InstructorController::class, 'edit_course']);
-    Route::get('/{username}/edit-quiz', [InstructorController::class, 'edit_quiz']);
+    Route::get('/manage-courses', [InstructorController::class, 'manage_courses'])->name('manage_courses');
+    Route::get('/manage-quizzes', [InstructorController::class, 'manage_quizzes'])->name('manage_quizzes');
+    Route::get('/earning', [InstructorController::class, 'earning'])->name('earning');
+    Route::get('/statement', [InstructorController::class, 'statement'])->name('statement');
+    Route::post('/edit-course', [InstructorController::class, 'edit_course'])->name('edit_course');
+    Route::get('/edit-quiz', [InstructorController::class, 'edit_quiz'])->name('edit_quiz');
 });
-
 
 // Application router
 // Enterprise router in application

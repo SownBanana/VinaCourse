@@ -84,3 +84,83 @@ button.text-btn:hover{
 	text-decoration: underline;
 }
 
+
+.section .btn_nav_group {
+	position: absolute;
+	visibility: hidden;
+    right: 0;
+	top: 0;
+	opacity: 0;
+	transition: 0.3s;
+}
+.section:hover .btn_nav_group {
+	opacity: 1;
+	visibility: unset;
+    position: absolute;
+    right: 0;
+    top: -1rem;
+}
+.btn_nav_group .nav_btn {
+	font-size: 1.3rem;
+	cursor: pointer;
+	transition: 0.3s;
+	margin-left: 0.25rem;
+}
+.btn_nav_group .add_quiz{
+	color: #d9ee1c;
+}
+.btn_nav_group .add_lesson{
+	color: #77c13a;
+}
+.btn_nav_group .delete_sector{
+	color: #d9534f;
+}
+.btn_nav_group .add_quiz:hover{
+	color: #f8f417;
+}
+.btn_nav_group .add_lesson:hover{
+	color: #5da522;
+}
+.btn_nav_group .delete_sector:hover{
+	color: #da3631;
+}
+
+.tooltip_owner .tooltiptext {
+	visibility: hidden;
+	width: 6rem;
+	background-color: rgba(0, 0, 0, 0.534);
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: 0.8rem;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: normal;
+	z-index: 1;
+	/* Position the tooltip */
+	position: absolute;
+    bottom: 140%;
+    margin-left: -3.6rem;
+}
+.tooltip_owner .tooltiptext::after {
+	content: " ";
+	position: absolute;
+	top: 100%; /* At the bottom of the tooltip */
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: rgba(0, 0, 0, 0.534) transparent transparent transparent;
+}
+
+.tooltip_owner:hover .tooltiptext {
+	visibility: visible;
+}
+
+.btn-blue{
+	color: #0043ffc7 !important;
+}
+
+.pointer{
+	cursor: pointer;
+}

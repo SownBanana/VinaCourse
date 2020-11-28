@@ -55,10 +55,10 @@ class AccountController extends Controller
         }
         switch ($role) {
             case UserRole::Student:{
-                return redirect()->route('instructor_dashboard', ['username' => $username]);
+                return redirect()->route('student_dashboard', ['username' => $username]);
             }
             case UserRole::Instructor:{
-                return redirect()->route('student_dashboard', ['username' => $username]);
+                return redirect()->route('instructor_dashboard', ['username' => $username]);
             }
             default:{
                 return redirect()->route('home');

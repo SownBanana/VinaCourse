@@ -32,8 +32,14 @@ class InstructorController extends Controller
         return view('instructor.statement.statement');
     }
 
-    public function edit_course()
+    public function edit_course(Request $request)
     {
+        $course = $request->course;
+        if ($course['id'] != "new") {
+            $a = $course['name'];
+        } else {
+            $a = $course['name'];
+        }
         return view('instructor.courses.edit-courses');
     }
 

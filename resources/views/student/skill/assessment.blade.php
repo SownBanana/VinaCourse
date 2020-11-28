@@ -1,4 +1,4 @@
-@extends('layout.student')
+@extends('layout.app')
 @section('active-skillassess', 'active')
 @section('content')
 <nav class="navbar navbar-expand-sm navbar-list navbar-light">

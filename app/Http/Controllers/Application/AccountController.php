@@ -100,7 +100,7 @@ class AccountController extends Controller
         // $account->user()->associate($user);
         $user->save();
         dispatch(new SendVerifyEmail($account));
-        Session::put("register_success", $request->username." đã đăng ký thành công");
+        // Session::put("register_success", $request->username." đã đăng ký thành công");
     }
 
     public function verify($code)
@@ -113,7 +113,7 @@ class AccountController extends Controller
             Auth::login($account, true);
             return redirect()->route('home');
         } else {
-            $notification_status ='Mã xác nhận không chính xác';
+            abort(404, 'Link xác thực hết hạn');
             return redirect(route('signup'))->with('status', $notification_status);
         }
     }
@@ -210,7 +210,8 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), $rules);
         if (!$validator->fails()) {
             $this->store($request);
-            $request->flash();
+            // $request->flash();
+            Auth::logout();
             return redirect(route('signup_payment'));
         } else {
             return redirect()->back()->withErrors($validator)->withInput();

@@ -26,7 +26,7 @@ use Illuminate\Routing\RouteGroup;
 Route::get('/', [AccountController::class, 'home'])->name('home');
 Route::get('/{username}', [AccountController::class, 'getUser'])->name('get_user_home');
 // Student router
-Route::group(['prefix' => 'student'], function () {
+Route::group(['prefix' => 'student', 'middleware' => 'CheckStudent'], function () {
     Route::get('/{username}/dashboard', [StudentController::class, 'dashboard'])->name('student_dashboard');
     Route::get('/course-preview', [StudentController::class, 'coursepreview']);
     Route::get('/lesson-preview', [StudentController::class, 'lessonpreview']);
@@ -35,19 +35,19 @@ Route::group(['prefix' => 'student'], function () {
     Route::get('/my-course', [StudentController::class, 'mycourse']);
     Route::get('/my-path', [StudentController::class, 'mypath']);
     Route::get('/path-detail', [StudentController::class, 'pathdetail']);
-    
+
     Route::get('/take-course', [TakeController::class, 'takecourse']);
     Route::get('/take-lession', [TakeController::class, 'takelesson']);
     Route::get('/take-quiz', [TakeController::class, 'takequiz']);
     Route::get('/my-quizzes', [TakeController::class, 'myquizzes']);
     Route::get('/quiz-result', [TakeController::class, 'quizresult']);
-    
+
     Route::get('/skill-assessment', [SkillController::class, 'skillassessment']);
     Route::get('/skill-result', [SkillController::class, 'skillresult']);
 });
 
 // Instructor router
-Route::group(['prefix' => 'instructor'], function () {
+Route::group(['prefix' => 'instructor', 'middleware' => 'CheckInstructor'], function () {
     Route::get('/{username}/dashboard', [InstructorController::class, 'dashboard'])->name('instructor_dashboard');
     Route::get('/manage-courses', [InstructorController::class, 'manage_courses'])->name('manage_courses');
     Route::get('/manage-quizzes', [InstructorController::class, 'manage_quizzes'])->name('manage_quizzes');
@@ -59,7 +59,7 @@ Route::group(['prefix' => 'instructor'], function () {
 
 // Application router
 // Enterprise router in application
-Route::group(['prefix' => 'enterprise'], function () {
+Route::group(['prefix' => 'enterprise', 'middleware' => 'CheckAdmin'], function () {
     Route::get('/erp-dashboard', [EnterpriseController::class, 'erp_dashboard']);
     Route::get('/crm-dashboard', [EnterpriseController::class, 'crm_dashboard']);
     Route::get('/hr-dashboard', [EnterpriseController::class, 'hr_dashboard']);

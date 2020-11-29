@@ -18,6 +18,9 @@
     <!-- Material Design Icons -->
     <link type="text/css" href="assets/css/material-icons.css" rel="stylesheet">
 
+    <!-- Quill Theme -->
+    <link type="text/css" href="assets/css/quill.css" rel="stylesheet">
+
 
     <!-- Font Awesome Icons -->
     <link type="text/css" href="assets/css/fontawesome.css" rel="stylesheet">
@@ -29,6 +32,9 @@
 
     <!-- App CSS -->
     <link type="text/css" href="assets/css/app.css" rel="stylesheet">
+
+
+    {{-- <link type="text/css" href="jquery-ui/themes/base/all.css" rel="stylesheet"> --}}
 
      <!-- Flatpickr -->
      <link type="text/css" href="assets/css/flatpickr.css" rel="stylesheet">

@@ -64,11 +64,11 @@ $(document).ready(function() {
         var course ={};
         course.id = $("#edit_course").attr("course_id");
         course.name = $('#course_name').val();
-        course.intro = $('#course_intro').val();
+        course.introduce = $('#course_intro').val();
         course.price = $('#course_price').val();
         course.topic = [];
         $('.topic_list .topic_item').each(function(e){
-            course.topic.push($(this).text().trim());
+            course.topic.push($(this).attr("topic_id"));
         });
         course.sections = [];
         $('#parent .section').each(function(e){
@@ -78,7 +78,7 @@ $(document).ready(function() {
             $(this).find('.lesson').each(function(e){
                 var lesson = {};
                 lesson.name = $(this).find('.lesson_name').text();
-                lesson.length = $(this).find('.lesson_length').text();
+                lesson.duration = $(this).find('.lesson_length').text();
                 lesson.info = $(this).find('.lesson_info').val();
                 lesson.url = $(this).find('.lesson_url').val();
                 section.lessons.push(lesson);

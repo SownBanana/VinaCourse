@@ -47,15 +47,6 @@ function editCourse() {
     $(".add_button").hide();
 }
 
-// $(function () {
-//     $(".editable").dblclick(function (e) {
-//         e.stopPropagation();
-//         var currentEle = $(this);
-//         var value = $(this).html();
-//         updateVal(currentEle, value);
-//     });
-// });
-
 $(document).on("dblclick", ".editable", function(e) {
     e.stopPropagation();
     var currentEle = $(this);
@@ -82,7 +73,7 @@ function updateVal(currentEle, value) {
     $(document).click(function(e) {
         if ($(e.target).attr("class") != "thVal") {
             $(currentEle).html($(".thVal").val());
-            $(document).off("click");
+            // $(document).off("click");
             currentEle = null;
         }
 
@@ -94,9 +85,9 @@ function updateVal(currentEle, value) {
 $(function() {
     $(".accordion__menu")
         .sortable({
-            connectWith: ".accordion__menu"
-        })
-        .disableSelection();
+            connectWith: ".accordion__menu",
+            handle: ".accordion__menu-link"
+        });
 });
 
 //Edit-Course
@@ -138,12 +129,14 @@ function addNewSection(name = "Tên chương", section_id = null) {
             `">
         </div>
     </div>`;
+
     $("#parent").append(section_template);
+
     $(".accordion__menu")
         .sortable({
-            connectWith: ".accordion__menu"
-        })
-        .disableSelection();
+            connectWith: ".accordion__menu",
+            handle: ".accordion__menu-link"
+        });
 }
 
 function deleteSection(element) {
@@ -218,6 +211,7 @@ $(document).on('click', '.rm_skill', function () {
 
 
 count_lesson = 0;
+lesson_quill_count = 0;
 function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
     var lesson_template =
         `<div class="lesson">
@@ -240,7 +234,10 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
                 
                 <div class="form-group mb-32pt">
                     <label class="form-label">Bài học</label>
-                    <textarea class="form-control lesson_info" rows="5" placeholder="Bài học..."></textarea>
+                    <!--<textarea class="form-control lesson_info" rows="5" placeholder="Bài học..."></textarea>-->
+                    <div id="lquill`+ lesson_quill_count +`" style="height: 150px;" class="mb-0 lesson_info" data-toggle="quill" data-quill-placeholder="Bài học...">
+                        Bài học...
+                    </div>
                     <small class="form-text text-muted">Đọc <a href="https://viblo.asia/helps/cach-su-dung-markdown-bxjvZYnwkJZ" target="_blank">hướng dẫn </a>để sử dụng markdown</small>
                 </div>
             </div>
@@ -249,8 +246,20 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
     $(element.parentNode.nextElementSibling.nextElementSibling).append(
         lesson_template
     );
+
+    // debugger
+    var quill = new Quill($('#lquill'+ lesson_quill_count++).get(0), {
+        theme: 'snow'
+    });
+    quill.focus()
+
 }
 $(document).on("click", ".editLesson", function() {
+    if($(this).text() == 'Sửa'){
+        $(this).text('Xong');
+    }else{
+        $(this).text('Sửa');
+    }
     $(this)
         .parent()
         .next()
@@ -260,10 +269,11 @@ $(document).on("click", ".editLesson", function() {
 $(document).on("dblclick", "#select_topic", function() {
     var option = $(this).find('option:selected');
     if (option.length>0){
-        var topic = option.text();
+        var topic = option.text().trim();
+        var topic_id = option.attr("topic_id");
         option.remove();
         var topic_item = `
-        <li class="topic_item">`+topic+`
+        <li class="topic_item" topic_id="`+topic_id+`">`+topic+`
             <i class="fa fa-times topic-remove"></i>
         </li>`;
         $('.topic_list').append(topic_item)
@@ -271,8 +281,18 @@ $(document).on("dblclick", "#select_topic", function() {
 
 });
 $(document).on("click", ".topic-remove", function() {
-    var topic = $(this).parent().text();
-    var option = `<option>`+topic+`</option>` 
+    var topic = $(this).parent().text().trim();
+    var topic_id = $(this).parent().attr("topic_id");
+    var option = `<option topic_id="`+topic_id+`">`+topic+`</option>` 
     $('#select_topic').append(option);
     $(this).parent().remove();
 });
+
+
+//Nav bar toggle
+// $(document).on("click", ".dropdown-toggle", function() {
+//     console.log($(this).next());
+//     $(this)
+//         .next()
+//         .collapse("toggle");
+// });

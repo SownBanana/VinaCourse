@@ -19,6 +19,7 @@ class Course extends Model
     }
     public function topics()
     {
+        // return $this->belongsToMany('App\Models\Topic', 'course_topic', 'course_id', 'topic_id');
         return $this->belongsToMany('App\Models\Topic');
     }
     public function sections()

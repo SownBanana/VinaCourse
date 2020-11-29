@@ -13,8 +13,3 @@ require('./bootstrap');
  */
 
 require('./components/Example');
-
-import 'jquery-ui/themes/base/all.css';
-import 'jquery-ui/ui/widgets/autocomplete.js';
-// require('jquery-ui-dist/jquery-ui');
-// Vue.component('editor', require('./components/Editor.vue'));

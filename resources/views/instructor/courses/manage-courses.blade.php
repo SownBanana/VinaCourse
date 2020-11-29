@@ -30,14 +30,9 @@
 </div>
 <div id= "manage_course" class="content_layout active">
     <div class="container page__container page-section">
-
-
         <div class="page-separator">
             <div class="page-separator__text">Development Courses</div>
         </div>
-    
-    
-    
         <div class="row">
     
             <div class="col-sm-6 col-md-4 col-xl-3">
@@ -461,11 +456,8 @@
         </div>
     
     
-    
         <div class="row">
-    
             <div class="col-sm-6 col-md-4 col-xl-3">
-    
                 <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal " data-partial-height="44" data-toggle="popover" data-trigger="click">
                     <a href="instructor-edit-course" class="js-image" data-position="">
                         <img src="assets/images/paths/sketch_430x168.png" alt="course">
@@ -879,6 +871,10 @@
     </div>
 </div>
 <div id="edit_course" class="content_layout" course_id="new">
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        jQuery.noConflict();
+    </script> --}}
     <div class="page-section border-bottom-2">
         <div class="container page__container">
             <div class="row">
@@ -894,7 +890,9 @@
                     
                     <div class="form-group mb-32pt">
                         <label class="form-label">Giới thiệu</label>
-                        <textarea id="course_intro" class="form-control" rows="5" placeholder="Mô tả khoá học..."></textarea>
+                        {{-- <textarea id="course_intro" class="form-control" rows="5" placeholder="Mô tả khoá học..."></textarea> --}}
+                        <div id="course_intro" style="height: 150px;" class="mb-0" data-toggle="quill" data-quill-placeholder="Mô tả khoá học...">
+                        </div>
                         <small class="form-text text-muted">Đọc <a href="https://viblo.asia/helps/cach-su-dung-markdown-bxjvZYnwkJZ" target="_blank">hướng dẫn </a>để sử dụng markdown</small>
                     </div>
 
@@ -903,6 +901,8 @@
                     </div>
 
                     <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
+
+
                     </div>
 
                     <button class="btn btn-outline-secondary mb-24pt mb-sm-0" onclick="addNewSection()">Thêm chương</button>
@@ -922,11 +922,9 @@
                                 <ul class="d-flex topic_list">
                                 </ul>
                                 <select id="select_topic" size="7" data-toggle="select" multiple class="form-control">
-                                    <option>JavaScript</option>
-                                    <option>Angular</option>
-                                    <option>Bootstrap</option>
-                                    <option>CSS</option>
-                                    <option>HTML</option>
+                                    @foreach ($topics as $topic)
+                                        <option topic_id='{{ $topic->id }}'>{{ $topic->name }}</option>
+                                    @endforeach
                                 </select>
                                 <small class="form-text text-muted">Chọn các topic phù hợp với khoá học.</small>
                             </div>
@@ -935,7 +933,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="input-group form-inline">
-                                            <input id="course_price" type="text" class="form-control" value="200.000">
+                                            <input id="course_price" type="text" class="form-control" value="200000">
                                             <span class="input-group-prepend"><span class="input-group-text">VNĐ</span></span>
                                         </div>
                                     </div>

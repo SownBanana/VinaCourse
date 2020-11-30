@@ -4,7 +4,7 @@
 @include('layout.head')
 
 
-<body class="layout-app ">
+<body class="layout-app">
     <div class="mask hidden"><div class="loader"></div></div>
     <div class="preloader">
         <div class="sk-double-bounce">

@@ -51,12 +51,12 @@
     <script src="assets/vendor/quill.min.js"></script>
     <script src="assets/js/quill.js"></script>
 
+    <script src="assets/js/jquery-ui.min.js"></script> 
+
+    {{-- <script src="assets/js/toastr.js"></script>  --}}
+    <script src="assets/vendor/toastr.min.js"></script> 
 
     <script src="assets/js/myjs.js"></script>
     <script src="assets/js/ajax.js"></script>
-    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> --}}
     <script src="assets/js/layout.js"></script>
     {{-- <script src="/js/app.js"></script> --}}
-
-    {{-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>  --}}
-    <script src="assets/js/jquery-ui.min.js"></script> 

@@ -29,18 +29,22 @@
     <!-- Preloader -->
     <link type="text/css" href="assets/css/preloader.css" rel="stylesheet">
 
+    <!-- Toastr -->
+    {{-- <link type="text/css" href="assets/css/toastr.css" rel="stylesheet"> --}}
+    <link type="text/css" href="assets/css/toastr.min.css" rel="stylesheet">
 
     <!-- App CSS -->
     <link type="text/css" href="assets/css/app.css" rel="stylesheet">
-
-
+    
+    
     {{-- <link type="text/css" href="jquery-ui/themes/base/all.css" rel="stylesheet"> --}}
+    
 
-     <!-- Flatpickr -->
-     <link type="text/css" href="assets/css/flatpickr.css" rel="stylesheet">
+    <!-- Flatpickr -->
+    <link type="text/css" href="assets/css/flatpickr.css" rel="stylesheet">
 
-     <link type="text/css" href="assets/css/flatpickr-airbnb.css" rel="stylesheet">
-     
-     <link type="text/css" href="assets/css/mycss.css" rel="stylesheet">
-     <link type="text/css" href="assets/css/layout.css" rel="stylesheet">
+    <link type="text/css" href="assets/css/flatpickr-airbnb.css" rel="stylesheet">
+    
+    <link type="text/css" href="assets/css/mycss.css" rel="stylesheet">
+    <link type="text/css" href="assets/css/layout.css" rel="stylesheet">
 </head>

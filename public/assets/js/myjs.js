@@ -74,6 +74,7 @@ function borderInput(elementId, isValid){
         element.classList.add("invalid");
     }
 }
+
 function validateForm() {
     //check variable
     var validated = true;
@@ -107,12 +108,12 @@ function validateForm() {
             validated = false;
         }
     if(!validated) {
-        alert("Vui lòng điền đúng các thông tin!");
+        toastr.error("Vui lòng điền đúng các thông tin!", "Lỗi");
     }
     if($('#policy').length)
         if (!$('#policy').is(':checked')) {
             validated = false;
-            alert("Bạn phải chấp nhận các điều khoản của chúng tôi để đăng ký");
+            toastr.warning("Bạn phải chấp nhận các điều khoản của chúng tôi để đăng ký", "Thông báo");
         }
     if(validated) wait_server();
     return validated;

@@ -929,7 +929,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="input-group form-inline">
-                                            <input id="course_price" type="text" class="form-control" value="200000">
+                                            <input id="course_price" type="number" class="form-control" value="100000">
                                             <span class="input-group-prepend"><span class="input-group-text">VNĐ</span></span>
                                         </div>
                                     </div>

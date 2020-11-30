@@ -1,3 +1,6 @@
+body{
+	overflow-y: scroll !important;
+}
 .passwordBlock .passReqBlock{
 	max-height: 0;
 	opacity: 0;

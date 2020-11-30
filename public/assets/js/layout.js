@@ -32,7 +32,7 @@ function addCourse() {
     );
     $(".add_button").hide();
 }
-function editCourse() {
+function editCourse(course) {
     activeContent("edit_course");
     $(".breadcrumb").empty();
     $(".breadcrumb").append(
@@ -282,10 +282,10 @@ $(document).on("dblclick", "#select_topic", function() {
         var topic_id = option.attr("topic_id");
         option.remove();
         var topic_item = `
-        <li class="topic_item" topic_id="`+topic_id+`">`+topic+`
+        <li style="background-color:`+getRandomColor()+`" class="topic_item" topic_id="`+topic_id+`">`+topic+`
             <i class="fa fa-times topic-remove"></i>
         </li>`;
-        $('.topic_list').append(topic_item)
+        $('.topic_list').append(topic_item);
     }
 
 });
@@ -297,6 +297,14 @@ $(document).on("click", ".topic-remove", function() {
     $(this).parent().remove();
 });
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 
 //Nav bar toggle
 // $(document).on("click", ".dropdown-toggle", function() {

@@ -1,4 +1,22 @@
 $(document).ready(function() {
+    // debugger
+    toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "3000",
+    "extendedTimeOut": "900",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+    }
     $("#loginBtn").click(function(e) {
         e.preventDefault();
         $('#usernameHelp').text('');
@@ -7,7 +25,7 @@ $(document).ready(function() {
         var password = $("#password").val();
         var remember_me = $("#remember_me").val() == 'on';
         if(login == "" || password == ""){
-            alert("Điền thông tin đăng nhập");
+            toastr["error"]("Điền đầy đủ thông tin đăng nhập", "Lỗi");
             stop_wait_server()
         }else{
             $.ajaxSetup({
@@ -25,7 +43,7 @@ $(document).ready(function() {
                     handleLogin(data);
                 },
                 error: function (data){
-                    alert("Lỗi: "+data);
+                    toastr.error(data, "Lỗi");
                     stop_wait_server();
                 }
             });
@@ -35,7 +53,8 @@ $(document).ready(function() {
         e.preventDefault();
         var email = $("#email").val();
         if(email == ""){
-            alert("Điền email/username của bạn");
+            toastr.warning("Điền email/username của bạn");
+            // alert("Điền email/username của bạn");
         }else{
             $.ajaxSetup({
                 headers: {
@@ -53,24 +72,44 @@ $(document).ready(function() {
                     showAlert('.alert', data.mss);
                 },
                 error: function (data){
-                    alert("Lỗi: "+data.mss);
+                    // alert("Lỗi: "+data.mss);
+                    toastr.error(data.mss, "Lỗi");
                 }
             });
         }
     });
     
     $('#saveCourse').click(function(e, course_id='new'){
+        debugger
         e.preventDefault();
+        wait_server();
+        var checkValid = true;
         var course ={};
         course.id = $("#edit_course").attr("course_id");
-        course.name = $('#course_name').val();
-        console.log($('#course_intro').find('.ql-editor').html());
+        course.name = $('#course_name').val().trim();
         course.introduce = $('#course_intro').find('.ql-editor').html();
         course.price = $('#course_price').val();
+        if(course.name == ""){
+            toastr.warning("Thêm tên khoá học");
+            checkValid = false;
+        }
+        debugger
+        if($('#course_intro').find('.ql-editor').text().trim() == ""){
+            toastr.warning("Thêm giới thiệu khoá học");
+            checkValid = false;
+        }
+        if(course.price == ""){
+            toastr.warning("Thêm giá cho khoá học");
+            checkValid = false;
+        }
         course.topics = [];
         $('.topic_list .topic_item').each(function(e){
             course.topics.push($(this).attr("topic_id"));
         });
+        if(course.topics.length == 0){
+            toastr.warning("Thêm topic cho khoá học");
+            checkValid = false;
+        }
         course.sections = [];
         $('#parent .section').each(function(e){
             var section = {};
@@ -85,6 +124,10 @@ $(document).ready(function() {
                 section.lessons.push(lesson);
                 // lesson = {};
             });
+            if(course.lessons.length == 0){
+                toastr.warning("Vui lòng thêm bài học cho khoá học " + section.name + "!");
+                checkValid = false;
+            }
             section.quizzes = [];
             $(this).find('.quiz').each(function(e){
                 var quiz = {};
@@ -102,8 +145,14 @@ $(document).ready(function() {
             course.sections.push(section);
             // section = {};
         });
-        debugger
-        console.log(course);
+        if(course.sections.length == 0){
+            toastr.warning("Khoá học phải có ít nhất 1 chương!");
+            checkValid = false;
+        }
+        if(!checkValid){
+            stop_wait_server();
+            return;
+        }
         $.ajaxSetup({
             headers: {
                 // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -116,10 +165,10 @@ $(document).ready(function() {
             type: "POST",
             data: {course: course},
             success: function (data) {
-                handleLogin(data);
+                toastr.success(data, "Thêm khoá học thành công");
             },
             error: function (data){
-                alert("Lỗi: "+data);
+                toastr.error(data, "Lỗi");
                 stop_wait_server();
             }
         });
@@ -144,11 +193,11 @@ function sendVerify(ele, e){
             type: "GET",
             data: {},
             success: function (data) {
-                alert(data.mss);
+                toastr.success(data, "Lỗi");
                 stop_wait_server();
             },
             error: function (data){
-                alert("Lỗi: "+data.mss);
+                toastr.error(data.mss, "Lỗi");
                 stop_wait_server();
             }
         });

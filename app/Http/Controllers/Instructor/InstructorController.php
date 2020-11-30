@@ -60,9 +60,8 @@ class InstructorController extends Controller
         $newCourse->instructor_id = Auth::user()->id;
         $newCourse->introduce = $course['introduce'];
         $newCourse->price = $course['price'];
-        $a = $course['topic'];
         $newCourse->save();
-        $newCourse->topics()->attach($course['topic']);
+        $newCourse->topics()->attach($course['topics']);
         foreach ($course['sections'] as $section) {
             $newSection = new Section;
             $newSection->name = $section['name'];

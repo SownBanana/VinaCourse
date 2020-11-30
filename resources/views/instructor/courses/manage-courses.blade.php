@@ -871,10 +871,6 @@
     </div>
 </div>
 <div id="edit_course" class="content_layout" course_id="new">
-    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script type="text/javascript">
-        jQuery.noConflict();
-    </script> --}}
     <div class="page-section border-bottom-2">
         <div class="container page__container">
             <div class="row">

@@ -144,6 +144,7 @@ function deleteSection(element) {
     element.parentNode.parentNode.remove();
 }
 count_quiz = 0;
+quiz_quill_count = 0;
 function addQuiz(element, name = "Quiz") {
     var quiz_template =
         `<div class="quiz">
@@ -158,7 +159,9 @@ function addQuiz(element, name = "Quiz") {
                 <div class="a_quiz">
                     <div class="form-group mb-32pt">
                         <label class="form-label">Câu hỏi</label>
-                        <textarea class="form-control quiz_question" rows="3" placeholder="Câu hỏi..."></textarea>
+                        <!-- <textarea class="form-control quiz_question" rows="3" placeholder="Câu hỏi..."></textarea> -->
+                        <div id="qquill`+ quiz_quill_count +`" style="height: 100px;" class="mb-0 quiz_question" data-toggle="quill" data-quill-placeholder="Câu hỏi...">
+                        </div>
                         <small class="form-text text-muted">Đọc <a href="https://viblo.asia/helps/cach-su-dung-markdown-bxjvZYnwkJZ" target="_blank">hướng dẫn </a>để sử dụng markdown</small>
                     </div>
                     <div class="quiz_answer form-row col-md-12 col-sm-12 ml-2">
@@ -178,6 +181,12 @@ function addQuiz(element, name = "Quiz") {
     $(element.parentNode.nextElementSibling.nextElementSibling).append(
         quiz_template
     );
+
+    
+    var quill = new Quill($('#qquill'+ quiz_quill_count++).get(0), {
+        theme: 'snow'
+    });
+    quill.focus()
 }
 $(document).on("click", ".editQuiz", function() {
     $(this)
@@ -201,6 +210,7 @@ $(document).on('click', '#add_answer', function(){
     </div>`;
     // var temp = $(templateSkill).insertBefore('.answer-help');
     $(this).parent().after(templateSkill);
+
 })
 
 $(document).on('click', '.rm_skill', function () {
@@ -236,7 +246,6 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
                     <label class="form-label">Bài học</label>
                     <!--<textarea class="form-control lesson_info" rows="5" placeholder="Bài học..."></textarea>-->
                     <div id="lquill`+ lesson_quill_count +`" style="height: 150px;" class="mb-0 lesson_info" data-toggle="quill" data-quill-placeholder="Bài học...">
-                        Bài học...
                     </div>
                     <small class="form-text text-muted">Đọc <a href="https://viblo.asia/helps/cach-su-dung-markdown-bxjvZYnwkJZ" target="_blank">hướng dẫn </a>để sử dụng markdown</small>
                 </div>

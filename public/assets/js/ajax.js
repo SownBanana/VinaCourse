@@ -64,11 +64,12 @@ $(document).ready(function() {
         var course ={};
         course.id = $("#edit_course").attr("course_id");
         course.name = $('#course_name').val();
-        course.introduce = $('#course_intro').val();
+        console.log($('#course_intro').find('.ql-editor').html());
+        course.introduce = $('#course_intro').find('.ql-editor').html();
         course.price = $('#course_price').val();
-        course.topic = [];
+        course.topics = [];
         $('.topic_list .topic_item').each(function(e){
-            course.topic.push($(this).attr("topic_id"));
+            course.topics.push($(this).attr("topic_id"));
         });
         course.sections = [];
         $('#parent .section').each(function(e){
@@ -79,7 +80,7 @@ $(document).ready(function() {
                 var lesson = {};
                 lesson.name = $(this).find('.lesson_name').text();
                 lesson.duration = $(this).find('.lesson_length').text();
-                lesson.info = $(this).find('.lesson_info').val();
+                lesson.info = $(this).find('.lesson_info').find('.ql-editor').html();
                 lesson.url = $(this).find('.lesson_url').val();
                 section.lessons.push(lesson);
                 // lesson = {};
@@ -88,7 +89,7 @@ $(document).ready(function() {
             $(this).find('.quiz').each(function(e){
                 var quiz = {};
                 quiz.name = $(this).find('.quiz_name').text();
-                quiz.question = $(this).find('.quiz_question').val();
+                quiz.question = $(this).find('.quiz_question').find('.ql-editor').html();
                 quiz.answers = [];
                 $(this).find('.quiz_answer').each(function(e){
                     var answer = {};
@@ -101,6 +102,7 @@ $(document).ready(function() {
             course.sections.push(section);
             // section = {};
         });
+        debugger
         console.log(course);
         $.ajaxSetup({
             headers: {

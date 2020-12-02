@@ -18,8 +18,8 @@ class CreateLessonsTable extends Migration
             $table->string('name');
             $table->integer('section_id');
             $table->string('duration');
-            $table->string('video_url');
-            $table->string('info');
+            $table->string('video_url')->nullable();
+            $table->longText('info');
             $table->timestamps();
         });
     }

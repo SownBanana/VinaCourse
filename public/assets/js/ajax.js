@@ -80,20 +80,20 @@ $(document).ready(function() {
     });
     
     $('#saveCourse').click(function(e, course_id='new'){
-        debugger
         e.preventDefault();
         wait_server();
         var checkValid = true;
         var course ={};
+        var formData = new FormData();
         course.id = $("#edit_course").attr("course_id");
         course.name = $('#course_name').val().trim();
         course.introduce = $('#course_intro').find('.ql-editor').html();
         course.price = $('#course_price').val();
+        formData.append('thumbnail', $('#course_thumbnail')[0].files[0]);
         if(course.name == ""){
             toastr.warning("Thêm tên khoá học");
             checkValid = false;
         }
-        debugger
         if($('#course_intro').find('.ql-editor').text().trim() == ""){
             toastr.warning("Thêm giới thiệu khoá học");
             checkValid = false;
@@ -124,7 +124,8 @@ $(document).ready(function() {
                 section.lessons.push(lesson);
                 // lesson = {};
             });
-            if(course.lessons.length == 0){
+            debugger
+        if(section.lessons.length == 0){
                 toastr.warning("Vui lòng thêm bài học cho khoá học " + section.name + "!");
                 checkValid = false;
             }
@@ -133,13 +134,23 @@ $(document).ready(function() {
                 var quiz = {};
                 quiz.name = $(this).find('.quiz_name').text();
                 quiz.question = $(this).find('.quiz_question').find('.ql-editor').html();
+                if($(this).find('.quiz_question').find('.ql-editor').text().trim() == ""){
+                    toastr.warning("Thêm câu hỏi cho quiz " + quiz.name + ", chương " + section.name);
+                    checkValid = false;
+                }
                 quiz.answers = [];
                 $(this).find('.quiz_answer').each(function(e){
                     var answer = {};
                     answer.isAnswer = $(this).find('input.isAnswer').is(':checked');
-                    answer.content = $(this).find('input.ans_content').val();
-                    quiz.answers.push(answer);
-                })
+                    answer.content = $(this).find('input.ans_content').val().trim();
+                    debugger
+                    if(answer.content != null && answer.content != "")
+                        quiz.answers.push(answer);
+                });
+                if(quiz.answers == 0){
+                    toastr.warning("Thêm câu trả lời cho quiz " + quiz.name + ", chương " + section.name);
+                    checkValid = false;
+                }
                 section.quizzes.push(quiz);
             });
             course.sections.push(section);
@@ -153,6 +164,8 @@ $(document).ready(function() {
             stop_wait_server();
             return;
         }
+        // formData.append('course', course);
+        appendFormdata(formData, course);
         $.ajaxSetup({
             headers: {
                 // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -163,17 +176,76 @@ $(document).ready(function() {
         $.ajax({
             url: "/instructor/edit-course",
             type: "POST",
-            data: {course: course},
+            contentType: false,
+            enctype: 'multipart/form-data',
+            processData: false,
+            data: formData,
+            // data: {course: course},
             success: function (data) {
-                toastr.success(data, "Thêm khoá học thành công");
+                stop_wait_server();
+                if(data.status == 'success'){
+                    toastr.success(data.message, "Thành công");
+                    refreshEditPane();
+                    addCourseToList(data.course, data.owner_name);
+                    window.location.replace('/instructor/manage-courses');
+                }
+                else toastr.error(data.message, "Thất bại");
             },
             error: function (data){
-                toastr.error(data, "Lỗi");
                 stop_wait_server();
+                toastr.error(data.message, "Lỗi");
             }
         });
-    })
+    });
+    
+addCourseToList(course, owner_name);
+refreshEditPane();
+
 });
+
+function appendFormdata(FormData, data, name){
+    name = name || '';
+    if (typeof data === 'object'){
+        $.each(data, function(index, value){
+            if (name == ''){
+                appendFormdata(FormData, value, index);
+            } else {
+                appendFormdata(FormData, value, name + '['+index+']');
+            }
+        })
+    } else {
+        FormData.append(name, data);
+    }
+}
+
+/* Phân trang ajax
+    Đoạn này hoạt đông được nhưng lỗi dynamically element không nhận
+    jquery của thư viện material-disign-kit.js
+*/
+//Course paginate // Đoạn này hoạt động được nhưng 
+// $(document).on('click', '.page-link', function(e){
+//     e.preventDefault();
+//     var page = $(this).attr('href').split('page=')[1];
+
+//     $.ajaxSetup({
+//         headers: {
+//             // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//             'X-CSRF-TOKEN': $("input[name='_token']").val()
+//         }
+//     });
+    
+    // $.ajax({
+    //     url: "/instructor/manage-courses?page=" + page,
+    //     type: "GET",
+    //     success: function (data) {
+    //         console.log(data);
+    //         $('#manage_course').html(data)
+    //     },
+    //     error: function (data){
+    //         toastr.error(data, "Lỗi");
+    //     }
+    // });
+// })
 
 function sendVerify(ele, e){
         // debugger

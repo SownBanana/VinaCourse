@@ -16,8 +16,8 @@ class CreateAnswersTable extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
             $table->integer('quiz_id');
+            $table->integer('is_true');
             $table->string('content');
-            $table->boolean('is_true');
             $table->timestamps();
         });
     }

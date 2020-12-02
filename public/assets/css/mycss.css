@@ -167,3 +167,16 @@ button.text-btn:hover{
 .pointer{
 	cursor: pointer;
 }
+
+/* Pageination */
+.page-link.selected_page {
+    background-color: #80808038;
+}
+
+.whiteButton{
+	color: white !important;
+}
+
+.itemheight{
+	height: 212px !important;
+}

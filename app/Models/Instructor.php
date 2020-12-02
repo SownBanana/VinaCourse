@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Instructor extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = 'account_id';
     /**
      * The attributes that are mass assignable.
      *

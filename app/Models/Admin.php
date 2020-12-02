@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Admin extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'account_id';
 
     public function account()
     {

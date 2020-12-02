@@ -15,8 +15,8 @@ class CreateInstructorsTable extends Migration
     {
         Schema::create('instructors', function (Blueprint $table) {
             $table->integer('account_id')->primary();
-            $table->string('introduce')->nullable();
-            $table->string('bio')->nullable();
+            $table->longText('introduce')->nullable();
+            $table->longText('bio')->nullable();
             $table->timestamps();
         });
     }

@@ -1,8 +1,24 @@
+$(document).ready(function(){
+    //save list topic
+    topicSelectListHTML = $('#select_topic').html();
+})
 function removeAllActiveContent() {
     $(".content_layout").each(function(index, value) {
         $(this).removeClass("active");
     });
 }
+
+function refreshEditPane(){
+    debugger
+    $('#edit_course').attr("new");
+    $("#course_name").val("");
+    $("#course_intro .ql-editor").html("");
+    $("#parent").html("");
+    $("ul.topic_list").html("");
+    $('#select_topic').html(topicSelectListHTML);
+    $('#course_price').val(100000);
+}
+
 function activeContent(content_id) {
     removeAllActiveContent();
     $("#" + content_id).addClass("active");
@@ -31,9 +47,18 @@ function addCourse() {
         '<li class="breadcrumb-item active">Thêm khoá học</li>'
     );
     $(".add_button").hide();
+
+    $('#edit_course').attr("course_id", "new");
 }
-function editCourse(course) {
+
+$(document).on('click', '.editCourse', function(e){
+    course_id = $(this).attr('class')[$(this).attr('class').length-1];
+    editCourse(course_id);
+})
+
+function editCourse(course_id) {
     activeContent("edit_course");
+    refreshEditPane();
     $(".breadcrumb").empty();
     $(".breadcrumb").append(
         '<li class="breadcrumb-item"><a href="{{route(\'home\')}}">Home</a></li>'
@@ -45,6 +70,8 @@ function editCourse(course) {
         '<li class="breadcrumb-item active">Sửa khoá học</li>'
     );
     $(".add_button").hide();
+
+    $('#edit_course').attr("course_id", course_id);
 }
 
 $(document).on("dblclick", ".editable", function(e) {
@@ -53,33 +80,135 @@ $(document).on("dblclick", ".editable", function(e) {
     var value = $(this).html();
     updateVal(currentEle, value);
 });
-
+var isEditOn = false;
 function updateVal(currentEle, value) {
-    $(currentEle).html(
-        '<input class="thVal" type="text" value="' + value + '" />'
-    );
-    $(".thVal").focus();
-    $(".thVal").keyup(function(event) {
-        if (event.keyCode == 13) {
-            $(currentEle).html(
-                $(".thVal")
-                    .val()
-                    .trim()
-            );
-            currentEle = null;
-        }
-    });
+    if(isEditOn){
 
-    $(document).click(function(e) {
-        if ($(e.target).attr("class") != "thVal") {
-            $(currentEle).html($(".thVal").val());
-            // $(document).off("click");
-            currentEle = null;
-        }
+    }else{
+        isEditOn = true;
+        $(currentEle).html(
+            '<input class="thVal" type="text" value="' + value + '" />'
+        );
+        $(".thVal").focus();
+        $(".thVal").keyup(function(event) {
+            if (event.keyCode == 13) {
+                if($(".thVal").val().trim() != ""){
+                    $(currentEle).html(
+                        $(".thVal")
+                            .val()
+                            .trim()
+                    );
+                    currentEle = null;
+                    isEditOn = false;
+                }
+            }
+        });
+    
+        $(document).click(function(e) {
+            if ($(e.target).attr("class") != "thVal") {
+                if($(".thVal").val().trim() != ""){
+                    $(currentEle).html($(".thVal").val().trim());
+                    // $(document).off("click");
+                }else{
+                    $(currentEle).html('Không được bỏ trống đâu!!!');
+                }
+                currentEle = null;
+                isEditOn = false;
+            }
+    
+            // $(currentEle).html($(".thVal").val());
+            // currentEle = null;
+        });
+    }
+}
 
-        // $(currentEle).html($(".thVal").val());
-        // currentEle = null;
-    });
+function addCourseToList(course, owner_name, totalTime, totalLessons, totalQuizzes){
+    debugger
+    if(course.thumbnail_url == null || course.thumbnail_url == ""){
+        course.thumbnail_url = 'assets/images/paths/angular_430x168.png';
+    }
+    if(totalQuizzes>0){
+        quizzesNumberTemp = `<div class="d-flex align-items-center">
+        <span class="material-icons icon-16pt text-black-50 mr-4pt">assessment</span>
+        <p class="flex text-black-50 lh-1 mb-0"><small>`+totalQuizzes+` Quiz</small></p>
+        </div>`
+    }else quizzesNumberTemp = '';
+    var course_template = `
+    <div course_id="`+course.id+`" class="col-sm-6 col-md-4 col-xl-3">    
+        <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal " {{--data-overlay-onload-show data-popover-onload-show data-force-reveal--}} data-partial-height="44" data-toggle="popover" data-trigger="click">
+            <a href="instructor-edit-course" class="js-image" data-position="">
+            <img src="`+course.thumbnail_url+`" alt="course">
+                <span class="overlay__content align-items-start justify-content-start">
+                    <span class="overlay__action card-body d-flex align-items-center">
+                        <i class="material-icons mr-4pt">edit</i>
+                        <span class="card-title text-white">Sửa</span>
+                    </span>
+                </span>
+            </a>
+            <div class="mdk-reveal__content">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div class="flex">
+                            <a class="card-title mb-4pt" href="instructor-edit-course">`+course.name+`</a>
+                        </div>
+                        <a href="instructor-edit-course" class="ml-4pt material-icons text-black-20 card-course__icon-favorite">edit</a>
+                    </div>
+                    <div class="d-flex">
+                        <div class="rating flex">
+                            <span class="rating__item"><span class="material-icons">star</span></span>
+                            <span class="rating__item"><span class="material-icons">star</span></span>
+                            <span class="rating__item"><span class="material-icons">star</span></span>
+                            <span class="rating__item"><span class="material-icons">star</span></span>
+                            <span class="rating__item"><span class="material-icons">star_border</span></span>
+                        </div>
+                        <small class="text-black-50">6 hours</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popoverContainer d-none">
+            <div class="media">
+                <div class="media-left mr-12pt">
+                    <img src="assets/images/paths/angular_40x40@2x.png" width="40" height="40" alt="Angular" class="rounded">
+                </div>
+                <div class="media-body">
+                    <div class="card-title mb-0">`+course.name+`</div>
+                    <p class="lh-1">
+                        <span class="text-black-50 small font-weight-bold">
+                            `+owner_name+`</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="my-16pt">
+                `+course.introduce+`
+            </div>
+
+            <div ds class="row align-items-center">
+                <div class="col-auto">
+                    <div class="d-flex align-items-center mb-4pt">
+                        <span class="material-icons icon-16pt text-black-50 mr-4pt">access_time</span>
+                        <p class="flex text-black-50 lh-1 mb-0"><small>
+                            `+ Math.floor((totalTime/60)*10)/10 +` giờ</small></p>
+                    </div>
+                    <div class="d-flex align-items-center mb-4pt">
+                        <span class="material-icons icon-16pt text-black-50 mr-4pt">play_circle_outline</span>
+                    <p class="flex text-black-50 lh-1 mb-0"><small>`+totalLessons+` khoá học</small></p>
+                    </div>
+                        `+quizzesNumberTemp+`
+                </div>
+                <div class="col text-right">
+                    <a class="btn btn-primary whiteButton editCourse `+course.id+`">Sửa khoá học</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>`;
+
+    $('#manage_course .row').prepend(course_template);
+    $('#not_have_course').remove();
+
 }
 
 $(function() {
@@ -194,24 +323,25 @@ $(document).on("click", ".editQuiz", function() {
         .next()
         .collapse("toggle");
 });
+$(document).on('click', '#add_answer', addAnswer);
 
-$(document).on('click', '#add_answer', function(){
-    var templateSkill = `
-    <div class="quiz_answer form-row col-md-12 col-sm-12 mt-2 ml-2">
-        <div class="ml-3 tooltip_owner">
-            <input type="checkbox" class="form-check-input isAnswer"  value="answer">
-            <span class="tooltiptext">Câu trả lời đúng</span>    
-        </div>
-        <div class="ml-1 col-md-8 col-sm-8">
-            <input type="text" class="form-control ans_content" required placeholder="Câu trả lời ...">
-        </div>
-        <button type="button" class="btn btn-success" id="add_answer"><i class="fa fa-plus" aria-hidden="true"></i></button>
-        <button type="button" class="btn btn-danger rm_skill ml-1"><i class="fa fa-minus" aria-hidden="true"></i></button>
-    </div>`;
-    // var temp = $(templateSkill).insertBefore('.answer-help');
-    $(this).parent().after(templateSkill);
-
-})
+function addAnswer(answer="", isAnswer = false){
+        var templateSkill = `
+        <div class="quiz_answer form-row col-md-12 col-sm-12 mt-2 ml-2">
+            <div class="ml-3 tooltip_owner">
+                <input type="checkbox" class="form-check-input isAnswer" value="answer" `+isAnswer?"checked":""+`>
+                <span class="tooltiptext">Câu trả lời đúng</span>    
+            </div>
+            <div class="ml-1 col-md-8 col-sm-8">
+                <input type="text" class="form-control ans_content" required placeholder="Câu trả lời ...">
+            </div>
+            <button type="button" class="btn btn-success" id="add_answer"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            <button type="button" class="btn btn-danger rm_skill ml-1"><i class="fa fa-minus" aria-hidden="true"></i></button>
+        </div>`;
+        // var temp = $(templateSkill).insertBefore('.answer-help');
+        $(this).parent().after(templateSkill);
+    
+    }
 
 $(document).on('click', '.rm_skill', function () {
     $(this).parent().remove();
@@ -222,7 +352,7 @@ $(document).on('click', '.rm_skill', function () {
 
 count_lesson = 0;
 lesson_quill_count = 0;
-function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
+function addNewLesson(element, name = "Tên Bài", length = "10m 10s", video_url = "") {
     var lesson_template =
         `<div class="lesson">
             <div class="accordion__menu-link" id="lesson-` +count_lesson +`">
@@ -238,7 +368,7 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s") {
             <div id="lesson`+count_lesson++ +`" class="p-3 collapse">
                 <label class="form-label">Link Video/File Video</label>
                 <div class="form-group row">
-                    <input type="text" class="form-control lesson_url" placeholder="URL nhúng video ..." value="">
+                    <input type="text" class="form-control lesson_url" placeholder="URL nhúng video ..." value="`+video_url+`">
                     <input type="file" class="form-control mt-1" value="Hoặc tải lên file">
                 </div>
                 
@@ -313,3 +443,8 @@ function getRandomColor() {
 //         .next()
 //         .collapse("toggle");
 // });
+
+function loadFile(e) {
+	var image = document.getElementById('output_thumbnail');
+	image.src = URL.createObjectURL(e.target.files[0]);
+};

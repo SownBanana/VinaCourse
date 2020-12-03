@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use App\Services\SocialAccountService;
 use Socialite;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
@@ -267,9 +269,37 @@ class AccountController extends Controller
         return view('application.account.edit-account');
     }
 
-    public function profile_privacy()
+    public function profile_privacy(Request $request)
     {
-        return view('application.account.profile-privacy');
+        if (Auth::check()) {
+            $user = Auth::user();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            if ($request->hasFile('avatar')) {
+                $image = $request->file('avatar');
+                $fileName = $user->username .'-avatar-200x200'. '.' . $image->getClientOriginalExtension();
+
+                $avatar = Image::make($image->getRealPath());
+                $avatar->resize(200, 200, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+
+                $avatar->stream();
+                if (Storage::exists('public/images/avatars'.'/'.$fileName)) {
+                    Storage::delete('public/images/avatars'.'/'.$fileName);
+                }
+                Storage::disk('local')->put('public/images/avatars'.'/'.$fileName, $avatar, 'public');
+                $user->avatar_url = Storage::url('public/images/avatars'.'/'.$fileName);
+            }
+            if ($user->role == UserRole::Instructor) {
+                $instructor = Instructor::find($user->id);
+                $instructor->introduce = $request->introduce;
+                $instructor->save();
+            }
+            $user->save();
+            return response()->json(['status'=>'success']);
+        }
+        return response()->json(['status'=>'error']);
     }
 
     public function email_notification()

@@ -54,6 +54,7 @@ Route::group(['prefix' => 'instructor', 'middleware' => 'CheckInstructor'], func
     Route::get('/earning', [InstructorController::class, 'earning'])->name('earning');
     Route::get('/statement', [InstructorController::class, 'statement'])->name('statement');
     Route::post('/edit-course', [InstructorController::class, 'edit_course'])->name('edit_course');
+    Route::get('/edit-course', [InstructorController::class, 'get_course'])->name('get_edit_course');
     Route::get('/edit-quiz', [InstructorController::class, 'edit_quiz'])->name('edit_quiz');
 });
 
@@ -82,8 +83,8 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/forgot-password', [AccountController::class, 'forgot_password'])->name('forgot_password');
     Route::get('/change-password', [AccountController::class, 'change_password'])->name('change_password');
     Route::post('/change-password', [AccountController::class, 'post_change_password'])->name('post_change_password');
-    Route::get('/edit-account', [AccountController::class, 'edit_account']);
-    Route::get('/edit-account-profile', [AccountController::class, 'profile_privacy']);
+    Route::get('/edit-account', [AccountController::class, 'edit_account'])->name('edit-account');
+    Route::post('/edit-account-profile', [AccountController::class, 'profile_privacy'])->name('save-account');
     Route::get('/edit-account-notification', [AccountController::class, 'email_notification']);
     Route::get('/edit-account-password', [AccountController::class, 'account_password']);
     Route::get('/billing', [AccountController::class, 'billing']);

@@ -9,8 +9,8 @@
         @foreach ($courses as $course)
             {{-- {{$course->introduce}} --}}
             <div course_id="{{$course->id}}" class="course_element col-sm-6 col-md-4 col-xl-3">      
-                <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal " {{--data-overlay-onload-show data-popover-onload-show data-force-reveal--}} data-partial-height="44" data-toggle="popover" data-trigger="click">
-                    <a href="" class="js-image" data-position="">
+                <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal" {{--data-overlay-onload-show data-popover-onload-show data-force-reveal--}} data-partial-height="44" data-toggle="popover" data-trigger="click">
+                    <a href="" class="js-image itemheight" data-position="">
                         <img src="@if ($course->thumbnail_url)
                             {!!asset($course->thumbnail_url)!!}
                         @else
@@ -109,11 +109,6 @@
     </div>
 
     <div class="mb-32pt">
-        {{-- {{ $courses->links() }} --}}
-        {{-- {{$courses->lastItem()}} --}}
-        {{-- @foreach ($courses as $course)
-            {{$course}}
-        @endforeach --}}
     <ul class="pagination justify-content-start pagination-xsm m-0">
         <li class="page-item @if ($courses->currentPage() == 1) disabled @endif">
         <a class="page-link" href="{{route('manage_courses')}}?page={{max($courses->currentPage() - 1, 1)}}" aria-label="Previous">

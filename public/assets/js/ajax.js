@@ -89,7 +89,8 @@ $(document).ready(function() {
         course.name = $('#course_name').val().trim();
         course.introduce = $('#course_intro').find('.ql-editor').html();
         course.price = $('#course_price').val();
-        formData.append('thumbnail', $('#course_thumbnail')[0].files[0]);
+        if( $("#old_thumbnail").attr("src") == '')
+            formData.append('thumbnail', $('#course_thumbnail')[0].files[0]);
         if(course.name == ""){
             toastr.warning("Thêm tên khoá học");
             checkValid = false;
@@ -113,10 +114,12 @@ $(document).ready(function() {
         course.sections = [];
         $('#parent .section').each(function(e){
             var section = {};
+            section.id = $(this).attr("section-id");
             section.name = $(this).find('.section_name').text();
             section.lessons = [];
             $(this).find('.lesson').each(function(e){
                 var lesson = {};
+                lesson.id = $(this).attr("lesson-id");
                 lesson.name = $(this).find('.lesson_name').text();
                 lesson.duration = $(this).find('.lesson_length').text();
                 lesson.info = $(this).find('.lesson_info').find('.ql-editor').html();
@@ -132,6 +135,7 @@ $(document).ready(function() {
             section.quizzes = [];
             $(this).find('.quiz').each(function(e){
                 var quiz = {};
+                quiz.id = $(this).attr("quiz-id");
                 quiz.name = $(this).find('.quiz_name').text();
                 quiz.question = $(this).find('.quiz_question').find('.ql-editor').html();
                 if($(this).find('.quiz_question').find('.ql-editor').text().trim() == ""){
@@ -141,6 +145,7 @@ $(document).ready(function() {
                 quiz.answers = [];
                 $(this).find('.quiz_answer').each(function(e){
                     var answer = {};
+                    answer.id = $(this).attr("answer-id");
                     answer.isAnswer = $(this).find('input.isAnswer').is(':checked');
                     answer.content = $(this).find('input.ans_content').val().trim();
                     debugger
@@ -166,6 +171,7 @@ $(document).ready(function() {
         }
         // formData.append('course', course);
         appendFormdata(formData, course);
+        
         $.ajaxSetup({
             headers: {
                 // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -198,9 +204,53 @@ $(document).ready(function() {
         });
     });
     
-addCourseToList(course, owner_name);
-refreshEditPane();
-
+    $('#save_user_info').click(function(e){
+        e.preventDefault();
+        wait_server();
+        var formData = new FormData();
+        var name = $("#user_name").val();
+        var email = $("#user_email").val();
+        var introduce = $('#introduce').find('.ql-editor').html();
+        if(name == "" || email == ""){
+            toastr["error"]("Điền đầy đủ thông tin đăng nhập", "Lỗi");
+            stop_wait_server()
+        }else{
+            if( $("#old_thumbnail").attr("src") == '')
+                formData.append('avatar', $('#avatar')[0].files[0]);
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('introduce', introduce);
+            debugger
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("input[name='_token']").val()
+                }
+            });
+            
+            $.ajax({
+                url: "/account/edit-account-profile",
+                type: "POST",
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    toastr.success("Lưu thông tin thành công!");
+                    debugger
+                    location.reload()
+                    stop_wait_server();
+                },
+                error: function (data){
+                    debugger
+                    toastr.error("Lỗi xác thực", "Lỗi");
+                    stop_wait_server();
+                }
+            });
+        }
+    })
+    // addCourseToList();
+    // refreshEditPane();
+    
 });
 
 function appendFormdata(FormData, data, name){
@@ -222,7 +272,7 @@ function appendFormdata(FormData, data, name){
     Đoạn này hoạt đông được nhưng lỗi dynamically element không nhận
     jquery của thư viện material-disign-kit.js
 */
-//Course paginate // Đoạn này hoạt động được nhưng 
+// // Course paginate
 // $(document).on('click', '.page-link', function(e){
 //     e.preventDefault();
 //     var page = $(this).attr('href').split('page=')[1];
@@ -234,17 +284,17 @@ function appendFormdata(FormData, data, name){
 //         }
 //     });
     
-    // $.ajax({
-    //     url: "/instructor/manage-courses?page=" + page,
-    //     type: "GET",
-    //     success: function (data) {
-    //         console.log(data);
-    //         $('#manage_course').html(data)
-    //     },
-    //     error: function (data){
-    //         toastr.error(data, "Lỗi");
-    //     }
-    // });
+//     $.ajax({
+//         url: "/instructor/manage-courses?page=" + page,
+//         type: "GET",
+//         success: function (data) {
+//             console.log(data);
+//             $('#manage_course').html(data)
+//         },
+//         error: function (data){
+//             toastr.error(data, "Lỗi");
+//         }
+//     });
 // })
 
 function sendVerify(ele, e){

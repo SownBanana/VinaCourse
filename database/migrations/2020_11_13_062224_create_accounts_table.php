@@ -20,6 +20,7 @@ class CreateAccountsTable extends Migration
             $table->string('username')->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('confirmation_code')->nullable();
+            $table->string('avatar_url')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->string('password')->nullable();
             $table->unsignedInteger('role')->default(UserRole::Student);

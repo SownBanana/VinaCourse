@@ -17,7 +17,7 @@ class CreateQuizzesTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('section_id');
-            $table->string('question');
+            $table->longText('question');
             $table->timestamps();
         });
     }

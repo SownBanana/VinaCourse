@@ -9,15 +9,93 @@ function removeAllActiveContent() {
 }
 
 function refreshEditPane(){
-    debugger
-    $('#edit_course').attr("new");
+    $('#edit_course').attr("course_id", "new");
     $("#course_name").val("");
     $("#course_intro .ql-editor").html("");
     $("#parent").html("");
     $("ul.topic_list").html("");
     $('#select_topic').html(topicSelectListHTML);
     $('#course_price').val(100000);
+    // var image = document.getElementById('output_thumbnail');
+    // image.src = '';
+    // var old_image = document.getElementById('old_thumbnail');
+	// old_image.src = '';
+    $('#output_thumbnail').attr('src', '');
+    $('#old_thumbnail').attr('src', '');
 }
+
+function fillEditPane(course){
+    $("#course_name").val(course.name);
+    $("#course_intro .ql-editor").html(course.introduce);
+    $("ul.topic_list").html("");
+    $('#select_topic').html(topicSelectListHTML);
+    $('#course_price').val(course.price);
+    // var old_image = document.getElementById('old_thumbnail');
+	// old_image.src = course.thumbnail_url;
+    $('#old_thumbnail').attr('src', course.thumbnail_url);
+
+    $.ajaxSetup({
+        headers: {
+            // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $("input[name='_token']").val()
+        }
+    });
+    
+    $.ajax({
+        url: "/instructor/edit-course",
+        type: "GET",
+        data: {course_id: course.id},
+        success: function (data) {
+            toastr.success(data.mss, "Lỗi");
+            // console.log(data);
+            $('#parent').html(data);
+            // $('.haveQuill').each(function() {
+            //     // debugger
+            //     // console.log($(this));
+            //     var quill = new Quill($(this), {
+            //         theme: 'snow'
+            //     });
+            // });
+            numLessons = 0;
+            while(true){
+                debugger
+                if($('#olquill'+numLessons).length > 0){
+                    var quill = new Quill($('#olquill'+numLessons++).get(0), {
+                    theme: 'snow'
+                    });
+                }else break;
+            }
+            numQuizzes = 0;
+            while(true){
+                if($('#oqquill'+numQuizzes).length > 0){
+                    var quill = new Quill($('#oqquill'+numQuizzes++).get(0), {
+                    theme: 'snow'
+                    });
+                }else break;
+            }
+                // var quill = new Quill($('#lquill0').get(0), {
+                //     theme: 'snow'
+                // });
+                // var quill = new Quill($('#lquill1').get(0), {
+                //     theme: 'snow'
+                // });
+                // quill.focus()
+            
+        },
+        error: function (data){
+            // alert("Lỗi: "+data.mss);
+            toastr.error(data.mss, "Lỗi");
+        }
+    });
+}
+$(document).on('click', '.refreshQuill', function(){
+    // debugger
+    console.log($('#lquill0').get(0));
+    var quill = new Quill($('#lquill0').get(0), {
+        theme: 'snow'
+    });
+    quill.focus()
+})
 
 function activeContent(content_id) {
     removeAllActiveContent();
@@ -72,6 +150,13 @@ function editCourse(course_id) {
     $(".add_button").hide();
 
     $('#edit_course').attr("course_id", course_id);
+    debugger
+    array = courses.data;
+    array.forEach(element => {
+        if(element.id == course_id){
+            fillEditPane(element);
+        }
+    });
 }
 
 $(document).on("dblclick", ".editable", function(e) {
@@ -228,12 +313,10 @@ $(document).on("click", ".accordion__toggle", function() {
 });
 
 section_count = 0;
-function addNewSection(name = "Tên chương", section_id = null) {
-    if (!section_id) {
-        section_id = section_count++;
-    }
+function addNewSection(name = "Tên chương") {
+    section_id = section_count++;
     var section_template =
-        `<div class="section accordion__item">
+        `<div class="section accordion__item" section-id="new">
             <div class="btn_nav_group">
                 <i onclick="addQuiz(this)" class="nav_btn add_quiz tooltip_owner fa fa-question-circle" aria-hidden="true">
                     <span class="tooltiptext">Thêm Quiz</span>
@@ -274,9 +357,9 @@ function deleteSection(element) {
 }
 count_quiz = 0;
 quiz_quill_count = 0;
-function addQuiz(element, name = "Quiz") {
+function addQuiz(element, name = "Quiz", parent=null) {
     var quiz_template =
-        `<div class="quiz">
+        `<div class="quiz" quiz-id="new">
             <div class="accordion__menu-link" id="quiz-` +count_quiz+`">
                 <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
                 <a class="flex editable quiz_name">` +
@@ -293,7 +376,7 @@ function addQuiz(element, name = "Quiz") {
                         </div>
                         <small class="form-text text-muted">Đọc <a href="https://viblo.asia/helps/cach-su-dung-markdown-bxjvZYnwkJZ" target="_blank">hướng dẫn </a>để sử dụng markdown</small>
                     </div>
-                    <div class="quiz_answer form-row col-md-12 col-sm-12 ml-2">
+                    <div class="quiz_answer form-row col-md-12 col-sm-12 ml-2" answer-id="new">
                         <div class="ml-3 tooltip_owner">
                             <input type="checkbox" class="form-check-input isAnswer" value="answer">
                             <span class="tooltiptext">Câu trả lời đúng</span>    
@@ -307,9 +390,14 @@ function addQuiz(element, name = "Quiz") {
             </div>
         </div>
         `;
-    $(element.parentNode.nextElementSibling.nextElementSibling).append(
-        quiz_template
-    );
+    if(element != null) {
+        $(element.parentNode.nextElementSibling.nextElementSibling).append(
+            quiz_template
+        );
+    }
+    else{
+        $('.section').last().find('.accordion__menu').append(quiz_template);
+    }
 
     
     var quill = new Quill($('#qquill'+ quiz_quill_count++).get(0), {
@@ -326,10 +414,13 @@ $(document).on("click", ".editQuiz", function() {
 $(document).on('click', '#add_answer', addAnswer);
 
 function addAnswer(answer="", isAnswer = false){
+        debugger
+        if(isAnswer) checked = 'checked';
+        else checked = '';
         var templateSkill = `
-        <div class="quiz_answer form-row col-md-12 col-sm-12 mt-2 ml-2">
+        <div class="quiz_answer form-row col-md-12 col-sm-12 mt-2 ml-2" answer-id="new">
             <div class="ml-3 tooltip_owner">
-                <input type="checkbox" class="form-check-input isAnswer" value="answer" `+isAnswer?"checked":""+`>
+                <input type="checkbox" class="form-check-input isAnswer" value="answer" `+checked+`>
                 <span class="tooltiptext">Câu trả lời đúng</span>    
             </div>
             <div class="ml-1 col-md-8 col-sm-8">
@@ -354,7 +445,7 @@ count_lesson = 0;
 lesson_quill_count = 0;
 function addNewLesson(element, name = "Tên Bài", length = "10m 10s", video_url = "") {
     var lesson_template =
-        `<div class="lesson">
+        `<div class="lesson" lesson-id="new">
             <div class="accordion__menu-link" id="lesson-` +count_lesson +`">
                 <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
                 <a class="flex editable lesson_name">` +
@@ -368,6 +459,8 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s", video_url
             <div id="lesson`+count_lesson++ +`" class="p-3 collapse">
                 <label class="form-label">Link Video/File Video</label>
                 <div class="form-group row">
+                    <iframe class="m-3" max-width="100%" src="">
+                    </iframe>
                     <input type="text" class="form-control lesson_url" placeholder="URL nhúng video ..." value="`+video_url+`">
                     <input type="file" class="form-control mt-1" value="Hoặc tải lên file">
                 </div>
@@ -382,9 +475,15 @@ function addNewLesson(element, name = "Tên Bài", length = "10m 10s", video_url
             </div>
         </div>
         `;
-    $(element.parentNode.nextElementSibling.nextElementSibling).append(
-        lesson_template
-    );
+
+    if(element != null) {
+        $(element.parentNode.nextElementSibling.nextElementSibling).append(
+            lesson_template
+        );
+    }
+    else{
+        $('.section').last().find('.accordion__menu').append(lesson_template);
+    }
 
     // debugger
     var quill = new Quill($('#lquill'+ lesson_quill_count++).get(0), {
@@ -447,4 +546,12 @@ function getRandomColor() {
 function loadFile(e) {
 	var image = document.getElementById('output_thumbnail');
 	image.src = URL.createObjectURL(e.target.files[0]);
+	var old_image = document.getElementById('old_thumbnail');
+	old_image.src = "";
 };
+
+$(document).on('focusout', '.lesson_url', function(e){
+    console.log($(this).prev());
+    $(this).prev().attr('src', $(this).val())
+})
+

@@ -1,6 +1,10 @@
 @extends('layout.app')
 @section('active-manage_courses', 'active')
 @section('content')
+<script>
+    var courses = {!! $courses->toJson() !!};
+    console.log(courses);
+</script>
 <div class="pt-32pt">
     <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
         <div class="flex d-flex flex-column flex-sm-row align-items-center mb-24pt mb-md-0">
@@ -74,7 +78,12 @@
                         <div class="card-body p-3">
                             <input type="file"  accept="image/*" name="image" id="course_thumbnail"  onchange="loadFile(event)" style="display: none;">
                             <label class="form-label" for="course_thumbnail" style="cursor: pointer;">Ảnh Thumbnail</label>
-                            <br><img id="output_thumbnail" style="max-width:100%;" />
+                            <br>
+                            <img id="output_thumbnail" style="max-width:100%;" />
+                            <img id="old_thumbnail" style="max-width:100%;" />
+                            <div class="mt-2 text-center">
+                                <label class="btn btn-light form-label" for="course_thumbnail" style="cursor: pointer;">Chọn ảnh</label>
+                            </div>
                         </div>
                     </div>
                     <div class="card">

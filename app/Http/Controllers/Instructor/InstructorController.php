@@ -25,12 +25,16 @@ class InstructorController extends Controller
 
     public function manage_courses(Request $request)
     {
-        $courses = Course::orderBy('created_at', 'desc')->paginate(8);
-        if ($request->ajax()) {
-            return view('layout.course-item', compact('courses'))->render();
+        if (Auth::check()) {
+            $courses = Course::where('instructor_id', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(8);
+            if ($request->ajax()) {
+                return view('layout.course-item', compact('courses'))->render();
+            }
+            $topics = Topic::all();
+            return view('instructor.courses.manage-courses', ['courses'=>$courses, 'topics'=>$topics]);
+        } else {
+            abort(404);
         }
-        $topics = Topic::all();
-        return view('instructor.courses.manage-courses', ['courses'=>$courses, 'topics'=>$topics]);
     }
 
     // public function getCoursePaginate(){
@@ -52,6 +56,21 @@ class InstructorController extends Controller
         return view('instructor.statement.statement');
     }
 
+    public function get_course(Request $request)
+    {
+        $user = Auth::user();
+        $course_id = $request->course_id;
+        if ($user === null) {
+            return response()->json(['status'=>'error', 'message' => 'User not authenticated', 404]);
+        }
+        $course = Course::where('id', $course_id)->where('instructor_id', $user->id);
+        if ($course === null) {
+            return response()->json(['status'=>'error', 'message' => 'User not have permission', 404]);
+        }
+        $sections = Section::where('course_id', $course_id)->get();
+        return view('layout.section-edit', ['sections'=>$sections])->render();
+    }
+
     public function edit_course(Request $request)
     {
         $course = $request->all();
@@ -66,8 +85,8 @@ class InstructorController extends Controller
             if ($course['id'] == "new") {
                 $newCourse = new Course;
             } else {
-                $newCourse = Course::where('id', $course['id'])->where('instructor_id', $user->id);
-                if ($user === null) {
+                $newCourse = Course::where('id', $course['id'])->where('instructor_id', $user->id)->first();
+                if ($newCourse === null) {
                     return response()->json(['status'=>'error', 'message' => 'Không tìm thấy khoá học', 404]);
                 }
             }
@@ -89,21 +108,38 @@ class InstructorController extends Controller
                 });
 
                 $thumbnail->stream();
-
+                if (Storage::exists('public/images/course_thumbnails'.'/'.$fileName)) {
+                    Storage::delete('public/images/course_thumbnails'.'/'.$fileName);
+                }
                 Storage::disk('local')->put('public/images/course_thumbnails'.'/'.$fileName, $thumbnail, 'public');
                 // $newCourse->thumbnail_url = 'images/course_thumbnails/'.$fileName;
                 $newCourse->thumbnail_url = Storage::url('public/images/course_thumbnails'.'/'.$fileName);
             }
             $newCourse->topics()->attach($course['topics']);
             foreach ($course['sections'] as $section) {
-                $newSection = new Section;
+                if ($section['id'] == "new") {
+                    $newSection = new Section;
+                } else {
+                    $newSection = Section::find($section['id']);
+                    if ($newSection === null) {
+                        return response()->json(['status'=>'error', 'message' => 'Không tìm thấy chương', 404]);
+                    }
+                }
                 $newSection->name = $section['name'];
                 $newSection->course()->associate($newCourse);
                 $newSection->save();
                 foreach ($section['lessons'] as $lesson) {
                     $totalLessons++;
                     $totalTime += 10;
-                    $newLesson = new Lesson;
+                    if ($lesson['id'] == "new") {
+                        $newLesson = new Lesson;
+                    } else {
+                        $newLesson = Lesson::find($lesson['id']);
+                        if ($newLesson === null) {
+                            return response()->json(['status'=>'error', 'message' => 'Không tìm thấy bài học', 404]);
+                        }
+                    }
+                    
                     $newLesson->name = $lesson['name'];
                     $newLesson->video_url = $lesson['url'];
                     $newLesson->info = $lesson['info'];
@@ -113,13 +149,27 @@ class InstructorController extends Controller
                 }
                 if (array_key_exists('quizzes', $section)) {
                     foreach ($section['quizzes'] as $quiz) {
-                        $newQuiz = new Quiz;
+                        if ($quiz['id'] == "new") {
+                            $newQuiz = new Quiz;
+                        } else {
+                            $newQuiz = Quiz::find($quiz['id']);
+                            if ($newQuiz === null) {
+                                return response()->json(['status'=>'error', 'message' => 'Không tìm thấy quiz', 404]);
+                            }
+                        }
                         $newQuiz->name = $quiz['name'];
                         $newQuiz->question = $quiz['question'];
                         $newQuiz->section()->associate($newSection);
                         $newQuiz->save();
                         foreach ($quiz['answers'] as $answer) {
-                            $newAnswer = new Answer;
+                            if ($answer['id'] == "new") {
+                                $newAnswer = new Answer;
+                            } else {
+                                $newAnswer = Answer::find($answer['id']);
+                                if ($newAnswer === null) {
+                                    return response()->json(['status'=>'error', 'message' => 'Không tìm thấy câu trả lời này', 404]);
+                                }
+                            }
                             $newAnswer->content = $answer['content'];
                             $newAnswer->is_true = ($answer['isAnswer'])?1:0;
                             $newAnswer->quiz()->associate($newQuiz);

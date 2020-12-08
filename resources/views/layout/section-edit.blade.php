@@ -16,7 +16,7 @@
             <i onclick="addNewLesson(this)" class="nav_btn add_lesson tooltip_owner fa fa-plus-circle" aria-hidden="true">
                 <span class="tooltiptext">Thêm Bài học</span>
             </i>
-            <i onclick="deleteSection(this)" class="nav_btn delete_sector tooltip_owner fa fa-minus-circle" aria-hidden="true">
+            <i class="nav_btn delete_section tooltip_owner fa fa-minus-circle" aria-hidden="true">
                 <span class="tooltiptext">Xoá Chương</span>
             </i>
         </div>
@@ -36,10 +36,10 @@
                     <div id="lesson{{$lesson_count++}}" class="p-3 collapse">
                         <label class="form-label">Link Video/File Video</label>
                         <div class="form-group row">
-                            <iframe class="m-3" max-width="100%" src="{{$lesson->video_url}}">
+                            <iframe class="m-3 mini-iframe" max-width="200%" src="{{$lesson->video_url}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                             </iframe>
                             <input type="text" class="form-control lesson_url" placeholder="URL nhúng video ..." value="{{$lesson->video_url}}">
-                            <input type="file" class="form-control mt-1" value="Hoặc tải lên file">
+                            <input type="file" class="form-control mt-1 video" value="Hoặc tải lên file">
                         </div>
                         
                         <div class="form-group mb-32pt">
@@ -74,7 +74,7 @@
                                     $answers = App\Models\Answer::where('quiz_id', $quiz->id)->get();
                                 @endphp
                                 @foreach ($answers as $answer)
-                                <div answer-id="{{$answer->id}}" class="quiz_answer form-row col-md-12 col-sm-12 ml-2">
+                                <div answer-id="{{$answer->id}}" class="quiz_answer form-row col-md-12 col-sm-12 ml-2 mt-2">
 
                                     <div class="ml-3 tooltip_owner">
                                         <input type="checkbox" class="form-check-input isAnswer" value="answer" {{($answer->is_true==1)?'checked':''}}>

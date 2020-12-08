@@ -56,7 +56,10 @@
     {{-- <script src="assets/js/toastr.js"></script>  --}}
     <script src="assets/vendor/toastr.min.js"></script> 
 
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
     <script src="assets/js/myjs.js"></script>
     <script src="assets/js/ajax.js"></script>
+    <script src="assets/js/notify.js"></script>
     <script src="assets/js/layout.js"></script>
     {{-- <script src="/js/app.js"></script> --}}

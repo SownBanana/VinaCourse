@@ -60,7 +60,7 @@
             </div>
             <div class="text">Vui lòng nhấn vào nút dưới đây để hoàn tất đăng ký.</div>
             <div class="button">
-                <a href="{{ URL::to(route('verify', ['code' => $confirmation_code])) }}">
+                <a href="{{ route('verify', ['code' => $confirmation_code]) }}">
                     Đây là Email của tôi
                 </a>
             </div>

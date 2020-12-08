@@ -1,24 +1,33 @@
-  <!-- Header -->
+<!-- Header -->
+@if (Auth::check())
+    <script>
+        var accountId = {{Auth::user()->id}};
+    </script>
+@else
+    <script>
+        var accountId = 0;
+    </script>
+@endif
+@php
+    if(Auth::check()){
+        $avatar = Auth::user()->avatar_url;
+        if(Auth::user()->role == App\Enums\UserRole::Instructor)
+            $user = App\Models\Instructor::find(Auth::user()->id);
+        else
+            $user = App\Models\Student::find(Auth::user()->id);
+    }
+    else {
+        $avatar = null;
+        $user = null;
+    }
 
-
-  <div class="navbar navbar-expand pr-0 navbar-light border-bottom-2" id="default-navbar" data-primary>
+@endphp
+<div class="navbar navbar-expand pr-0 navbar-light border-bottom-2" id="default-navbar" data-primary>
     <!-- Navbar toggler -->
+    @if (Auth::check())
     <button class="navbar-toggler w-auto mr-16pt d-block @yield('menu_button') rounded-0" type="button" data-toggle="sidebar">
         <span class="material-icons">short_text</span>
     </button>
-
-    <!-- Navbar Brand -->
-    <a href="index" class="navbar-brand mr-16pt d-lg-none">
-
-        <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
-
-            <span class="avatar-title rounded bg-primary"><img src="assets/images/illustration/student/128/white.svg" alt="logo" class="img-fluid" /></span>
-
-        </span>
-
-        <span class="d-none d-lg-block">Luma</span>
-    </a>
-        @if (Auth::check())
             @if (Auth::user()->role == App\Enums\UserRole::Instructor)
             <span class="d-none d-md-flex align-items-center mr-16pt">
 
@@ -55,17 +64,13 @@
             @endif
         @endif
 
-
-
-
-
     <div class="flex"></div>
 
 
     <!-- Toggler -->
     <div class="nav navbar-nav flex-nowrap d-flex mr-16pt">
 
-
+        @if (Auth::check())
         <!-- Notifications dropdown -->
         <div class="nav-item dropdown dropdown-notifications dropdown-xs-down-full" data-toggle="tooltip" data-title="Tin nhắn" data-placement="bottom" data-boundary="window">
             <button class="nav-link btn-flush dropdown-toggle" type="button" data-toggle="dropdown" data-caret="false">
@@ -85,7 +90,11 @@
                             </span>
                             <span class="d-flex">
                                 <span class="avatar avatar-xs mr-2">
-                                    <img src="assets/images/people/110/woman-5.jpg" alt="people" class="avatar-img rounded-circle">
+                                    @if ($avatar)
+                                        <img src="{!!asset($avatar) .'?'. time() !!}" alt="people" class="avatar-img rounded-circle">
+                                    @else
+                                        <img src="assets/images/people/110/woman-5.jpg" alt="people" class="avatar-img rounded-circle">
+                                    @endif
                                 </span>
                                 <span class="flex d-flex flex-column">
                                     <strong class="text-black-100">Michelle</strong>
@@ -101,7 +110,11 @@
                             </span>
                             <span class="d-flex">
                                 <span class="avatar avatar-xs mr-2">
-                                    <img src="assets/images/people/110/woman-5.jpg" alt="people" class="avatar-img rounded-circle">
+                                    @if ($avatar)
+                                        <img src="{!!asset($avatar) .'?'. time() !!}" alt="people" class="avatar-img rounded-circle">
+                                    @else
+                                        <img src="assets/images/people/110/woman-5.jpg" alt="people" class="avatar-img rounded-circle">
+                                    @endif
                                 </span>
                                 <span class="flex d-flex flex-column">
                                     <strong class="text-black-100">Michelle</strong>
@@ -121,82 +134,52 @@
         <div class="nav-item ml-16pt dropdown dropdown-notifications dropdown-xs-down-full" data-toggle="tooltip" data-title="Thông báo" data-placement="bottom" data-boundary="window">
             <button class="nav-link btn-flush dropdown-toggle" type="button" data-toggle="dropdown" data-caret="false">
                 <i class="material-icons">notifications_none</i>
-                <span class="badge badge-notifications badge-accent">2</span>
+                <span id="notify-dot" class="badge badge-notifications badge-accent @if (count($user->unreadNotifications) == 0) hidden
+                @endif">{{count($user->unreadNotifications)}}</span>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
-                <div data-perfect-scrollbar class="position-relative">
+                @csrf
+                <div data-perfect-scrollbar class="position-relative" style="max-height: 25rem;">
                     <div class="dropdown-header"><strong>Thông báo</strong></div>
-                    <div class="list-group list-group-flush mb-0">
-
-                        <a href="javascript:void(0);" class="list-group-item list-group-item-action unread">
+                    <div id="notify-list" class="list-group list-group-flush mb-0">
+                    @foreach ($user->unreadNotifications as $notification)
+                        <a href="/student/course-preview/{{$notification->data['course_id']}}" notification-id={{$notification->id}} class="list-group-item list-group-item-action unread notification-item" >
                             <span class="d-flex align-items-center mb-1">
-                                <small class="text-black-50">3 phút trước</small>
-
+                                <small class="text-black-50">{{$notification->created_at->diffForHumans()}}</small>
                                 <span class="ml-auto unread-indicator bg-accent"></span>
-
                             </span>
                             <span class="d-flex">
                                 <span class="avatar avatar-xs mr-2">
                                     <span class="avatar-title rounded-circle bg-light">
-                                        <i class="material-icons font-size-16pt text-accent">account_circle</i>
+                                    <img src="{{$notification->data['instructor_avatar']}}" alt="people" class="avatar-img rounded-circle">
                                     </span>
                                 </span>
                                 <span class="flex d-flex flex-column">
-
-                                    <span class="text-black-70">Your profile information has not been synced correctly.</span>
+                                    <strong class="text-black-100">{{$notification->data['instructor']}}</strong>
+                                    <span class="text-black-70">Đã {{$notification->data['type']}} khoá học {{$notification->data['course_name']}}</span>
                                 </span>
                             </span>
                         </a>
-
-                        <a href="javascript:void(0);" class="list-group-item list-group-item-action">
-                            <span class="d-flex align-items-center mb-1">
-                                <small class="text-black-50">5 giờ trước</small>
-
-                            </span>
-                            <span class="d-flex">
-                                <span class="avatar avatar-xs mr-2">
-                                    <span class="avatar-title rounded-circle bg-light">
-                                        <i class="material-icons font-size-16pt text-primary">group_add</i>
-                                    </span>
-                                </span>
-                                <span class="flex d-flex flex-column">
-                                    <strong class="text-black-100">Adrian. D</strong>
-                                    <span class="text-black-70">Wants to join your private group.</span>
-                                </span>
-                            </span>
-                        </a>
-
-                        <a href="javascript:void(0);" class="list-group-item list-group-item-action">
-                            <span class="d-flex align-items-center mb-1">
-                                <small class="text-black-50">1 ngày trước</small>
-
-                            </span>
-                            <span class="d-flex">
-                                <span class="avatar avatar-xs mr-2">
-                                    <span class="avatar-title rounded-circle bg-light">
-                                        <i class="material-icons font-size-16pt text-warning">storage</i>
-                                    </span>
-                                </span>
-                                <span class="flex d-flex flex-column">
-
-                                    <span class="text-black-70">Your deploy was successful.</span>
-                                </span>
-                            </span>
-                        </a>
-
+                    @endforeach
                     </div>
                 </div>
             </div>
         </div>
         <!-- // END Notifications dropdown -->
-
+        @endif
 
         <div class="nav-item dropdown">
             <a href="#" class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" data-caret="false">
 
                 <span class="avatar avatar-sm mr-8pt2">
 
-                    <span class="avatar-title rounded-circle bg-primary"><i class="material-icons">account_box</i></span>
+                    <span class="avatar-title rounded-circle bg-primary" style="overflow: hidden">
+                        @if ($avatar)
+                            <img style="" src="{!!asset($avatar) .'?'. time() !!}" class="img-fluid material-icons circle-ava" alt="logo" />
+                        @else
+                            <i class="material-icons">account_box</i>
+                        @endif
+                    </span>
 
                 </span>
 

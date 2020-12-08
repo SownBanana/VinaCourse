@@ -11,10 +11,15 @@ use App\Models\Quiz;
 use App\Models\Answer;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
-use DB;
+// use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use File;
+use Pusher\Pusher;
+use App\Models\Instructor;
+use App\Notifications\NewCourseNotification;
 
 class InstructorController extends Controller
 {
@@ -26,7 +31,7 @@ class InstructorController extends Controller
     public function manage_courses(Request $request)
     {
         if (Auth::check()) {
-            $courses = Course::where('instructor_id', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(8);
+            $courses = Course::where('instructor_id', Auth::user()->id)->with('topics')->orderBy('created_at', 'desc')->paginate(8);
             if ($request->ajax()) {
                 return view('layout.course-item', compact('courses'))->render();
             }
@@ -90,6 +95,27 @@ class InstructorController extends Controller
                     return response()->json(['status'=>'error', 'message' => 'Không tìm thấy khoá học', 404]);
                 }
             }
+
+            if (array_key_exists('deleteLessons', $course)) {
+                foreach ($course['deleteLessons'] as $delLessonId) {
+                    $fileName   = $user->username .'-'. $delLessonId .'.mp4';
+                    if (Storage::disk('google')->exists($fileName)) {
+                        Storage::delete($fileName);
+                    }
+                    Lesson::find($delLessonId)->delete();
+                }
+            }
+            if (array_key_exists('deleteQuizzes', $course)) {
+                foreach ($course['deleteQuizzes'] as $delQuizId) {
+                    Quiz::find($delQuizId)->delete();
+                }
+            }
+            if (array_key_exists('deleteSections', $course)) {
+                foreach ($course['deleteSections'] as $delSectionId) {
+                    Section::find($delSectionId)->delete();
+                }
+            }
+
             $totalTime = 0;
             $totalQuizzes = 0;
             $totalLessons = 0;
@@ -111,10 +137,12 @@ class InstructorController extends Controller
                 if (Storage::exists('public/images/course_thumbnails'.'/'.$fileName)) {
                     Storage::delete('public/images/course_thumbnails'.'/'.$fileName);
                 }
+                // Storage::disk('google')->put('public/images/course_thumbnails'.'/'.$fileName, $thumbnail, 'public');
                 Storage::disk('local')->put('public/images/course_thumbnails'.'/'.$fileName, $thumbnail, 'public');
                 // $newCourse->thumbnail_url = 'images/course_thumbnails/'.$fileName;
                 $newCourse->thumbnail_url = Storage::url('public/images/course_thumbnails'.'/'.$fileName);
             }
+            $newCourse->topics()->detach();
             $newCourse->topics()->attach($course['topics']);
             foreach ($course['sections'] as $section) {
                 if ($section['id'] == "new") {
@@ -139,12 +167,30 @@ class InstructorController extends Controller
                             return response()->json(['status'=>'error', 'message' => 'Không tìm thấy bài học', 404]);
                         }
                     }
-                    
+
                     $newLesson->name = $lesson['name'];
-                    $newLesson->video_url = $lesson['url'];
                     $newLesson->info = $lesson['info'];
                     $newLesson->duration = $lesson['duration'];
                     $newLesson->section()->associate($newSection);
+                    $newLesson->save();
+                    if (array_key_exists('video', $lesson)) {
+                        $video =  $request->file($lesson['video']);
+                        $fileName   = $user->username .'-'. $newLesson->id .'.' . $video->getClientOriginalExtension();
+                        if (Storage::disk('google')->exists($fileName)) {
+                            Storage::delete($fileName);
+                        }
+                        Storage::disk('google')->put($fileName, File::get($video));
+                        
+                        $fileArray = Storage::disk('google')->listContents();
+                        foreach ($fileArray as $file) {
+                            if ($file['name'] == $fileName) {
+                                $newLesson->video_url = 'https://drive.google.com/file/d/'.$file['path'].'/preview';
+                                break;
+                            }
+                        }
+                    } else {
+                        $newLesson->video_url = $lesson['url'];
+                    }
                     $newLesson->save();
                 }
                 if (array_key_exists('quizzes', $section)) {
@@ -171,7 +217,11 @@ class InstructorController extends Controller
                                 }
                             }
                             $newAnswer->content = $answer['content'];
-                            $newAnswer->is_true = ($answer['isAnswer'])?1:0;
+                            if ($answer['isAnswer'] == 'false') {
+                                $newAnswer->is_true = 0;
+                            } elseif ($answer['isAnswer'] == 'true') {
+                                $newAnswer->is_true = 1;
+                            }
                             $newAnswer->quiz()->associate($newQuiz);
                             $newAnswer->save();
                         }
@@ -184,6 +234,40 @@ class InstructorController extends Controller
             }
             $newCourse->save();
             DB::commit();
+
+            if ($course['id'] == "new") {
+                $type = 'thêm';
+            } else {
+                $type = 'sửa';
+            }
+            $followers = Instructor::find(Auth::user()->id)->followers()->get();
+            $notify = [
+                'instructor'=>Auth::user()->name,
+                'instructor_avatar'=>Auth::user()->avatar_url,
+                'course_id'=>$newCourse->id,
+                'course_name'=>$newCourse->name,
+                'type'=>$type,
+            ];
+            $receiverList = [];
+            foreach ($followers as $follower) {
+                $follower->notify(new NewCourseNotification($notify));
+                $receiverList[] = $follower->account_id;
+            }
+            $notify['receivers'] = $receiverList;
+            $options = array(
+                'cluster' => 'ap1',
+                'encrypted' => true
+            );
+    
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+    
+            $pusher->trigger('AddCourseNotifyEvent', 'add-course-notify', $notify);
+
             return response()->json(['status'=>'success', 'message' => 'Lưu khoá học thành công', 'course'=>$newCourse, 'owner_name'=>$user->name, 'totalTime'=>$totalTime, 'totalLessons'=>$totalLessons, 'totalQuizzes'=>$totalQuizzes, 200]);
             // });
         } catch (Exception $e) {

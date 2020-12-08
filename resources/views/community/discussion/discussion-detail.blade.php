@@ -118,7 +118,7 @@
                 <div class="page-separator">
                     <div class="page-separator__text">Top Contributors</div>
                 </div>
-                <p class="text-70 mb-24pt">People who started the most discussions on Luma.</p>
+                <p class="text-70 mb-24pt">People who started the most discussions on VinaCourse.</p>
 
 
 
@@ -203,7 +203,7 @@
 
 
             <a href="index" class="sidebar-brand ">
-                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                 <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -211,7 +211,7 @@
 
                 </span>
 
-                <span>Luma</span>
+                <span>VinaCourse</span>
             </a>
 
 

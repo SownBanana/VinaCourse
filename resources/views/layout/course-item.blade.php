@@ -9,12 +9,11 @@
         @foreach ($courses as $course)
             {{-- {{$course->introduce}} --}}
             <div course_id="{{$course->id}}" class="course_element col-sm-6 col-md-4 col-xl-3">      
-                <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal" {{--data-overlay-onload-show data-popover-onload-show data-force-reveal--}} data-partial-height="44" data-toggle="popover" data-trigger="click">
+                <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal" data-partial-height="44" data-toggle="popover" data-trigger="click">
                     <a href="" class="js-image itemheight" data-position="">
                         <img src="@if ($course->thumbnail_url)
                             {!!asset($course->thumbnail_url)!!}
                         @else
-                        
                             assets/images/paths/angular_430x168.png
                         @endif" alt="course">
                         <span class="overlay__content align-items-start justify-content-start">
@@ -32,6 +31,7 @@
                                 </div>
                                 <a href="" class="ml-4pt material-icons text-black-20 card-course__icon-favorite">edit</a>
                             </div>
+                            <div>{{number_format($course->price)}} VNĐ</div>
                             <div class="d-flex">
                                 <div class="rating flex">
                                     <span class="rating__item"><span class="material-icons">star</span></span>
@@ -48,20 +48,21 @@
                 <div class="popoverContainer d-none">
                     <div class="media">
                         <div class="media-left mr-12pt">
-                            <img src="assets/images/paths/angular_40x40@2x.png" width="40" height="40" alt="Angular" class="rounded">
+                            <img src="{{App\Models\Account::find($course->instructor_id)->avatar_url }}" width="40" height="40" alt="Angular" class="rounded">
                         </div>
                         <div class="media-body">
                             <div class="card-title mb-0">{{$course->name}}</div>
                             <p class="lh-1">
-                                {{-- <span class="text-black-50 small">với</span> --}}
+                                <span class="text-black-50 small">với</span>
                                 <span class="text-black-50 small font-weight-bold">
-                                    {{App\Models\Account::find($course->instructor_id)->value('name')}}</span>
+                                    {{App\Models\Account::find($course->instructor_id)->name}}
+                                </span>
                             </p>
                         </div>
                     </div>
             
                     <div class="my-16pt">
-                        {!! $course->introduce !!}
+                        {!! Str::of($course->introduce)->limit(1000) !!}
                     </div>
     
                     <div ds class="row align-items-center">

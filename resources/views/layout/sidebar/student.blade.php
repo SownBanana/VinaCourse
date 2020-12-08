@@ -28,14 +28,14 @@
             <span class="sidebar-menu-text">My Dashboard</span>
         </a>
     </li>
-    <li class="sidebar-menu-item @yield('active-mcourse')">
-        <a class="sidebar-menu-button" href="student/my-course">
+    {{-- <li class="sidebar-menu-item @yield('active-mcourse')">
+        <a class="sidebar-menu-button" href="{{route('student_course', ['username' => Auth::user()->username])}}">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">search</span>
             <span class="sidebar-menu-text">Khoá học của tôi</span>
         </a>
-    </li>
+    </li> --}}
     <li class="sidebar-menu-item @yield('active-mpath')">
-        <a class="sidebar-menu-button" href="student/my-path">
+        <a class="sidebar-menu-button" href="{{route('my_path')}}">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">timeline</span>
             <span class="sidebar-menu-text">Lộ trình của tôi</span>
         </a>

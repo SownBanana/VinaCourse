@@ -13,7 +13,7 @@
                     </div>
                     <div class="col-md-6">
                         <p class="text-white-70 mb-0"><strong>Prepared by</strong></p>
-                        <h2 class="text-white">Luma Inc.</h2>
+                        <h2 class="text-white">VinaCourse Inc.</h2>
                         <p class="text-white-50">32 Noah Cliffs Suite 626, Romania<br>Tax ID RO18880609</p>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
 
 
                 <a href="index" class="sidebar-brand ">
-                    <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                    <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                     <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -117,7 +117,7 @@
 
                     </span>
 
-                    <span>Luma</span>
+                    <span>VinaCourse</span>
                 </a>
 
 

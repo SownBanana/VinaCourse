@@ -11,6 +11,8 @@ use App\Http\Controllers\Application\AccountController;
 use App\Http\Controllers\Application\CMSController;
 use App\Http\Controllers\Application\CommunityController;
 use App\Http\Controllers\Application\EnterpriseController;
+use App\Http\Controllers\AdminController\AdminController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Routing\RouteGroup;
 
 /*
@@ -24,17 +26,30 @@ use Illuminate\Routing\RouteGroup;
 |
 */
 Route::get('/', [AccountController::class, 'home'])->name('home');
-Route::get('/{username}', [AccountController::class, 'getUser'])->name('get_user_home');
+
+// Admin router
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('/home', [AdminController::class, 'getIndex'])->name('admin_home');
+    Route::get('/allcourses', [AdminController::class, 'allCourse'])->name(('all_courses'));
+    Route::get('/user-account', [AdminController::class, 'getUser'])->name('user');
+    Route::get('/course/detail', [AdminController::class, 'getCourseDetail'])->name('course_detail');
+});
+
+Route::group(['middleware' => 'CheckStudent'], function () {
+    Route::get('/{username}', [AccountController::class, 'getUser'])->name('get_user_home');
+});
 // Student router
 Route::group(['prefix' => 'student', 'middleware' => 'CheckStudent'], function () {
     Route::get('/{username}/dashboard', [StudentController::class, 'dashboard'])->name('student_dashboard');
-    Route::get('/course-preview', [StudentController::class, 'coursepreview']);
-    Route::get('/lesson-preview', [StudentController::class, 'lessonpreview']);
-    Route::get('/browse-course', [StudentController::class, 'browsecourse']);
+    Route::get('/course-preview/{id}', [StudentController::class, 'course_preview'])->name('student_course');
+    Route::get('/lesson-preview/{course_id}', [StudentController::class, 'lesson_preview'])->name('student_lesson');
+    Route::get('/browse-course', [StudentController::class, 'browsecourse'])->name('browse-course');
     Route::get('/browse-path', [StudentController::class, 'browsepath']);
-    Route::get('/my-course', [StudentController::class, 'mycourse']);
-    Route::get('/my-path', [StudentController::class, 'mypath']);
-    Route::get('/path-detail', [StudentController::class, 'pathdetail']);
+    Route::get('/{username}/my-course', [StudentController::class, 'mycourse'])->name('my_course');
+    Route::get('/my-path', [StudentController::class, 'mypath'])->name('my_path');
+    Route::get('/path-detail', [StudentController::class, 'pathdetail'])->name('path_detail');
+    
+    Route::post('/buy-course', [StudentController::class, 'buycourse'])->name('buy_course');
 
     Route::get('/take-course', [TakeController::class, 'takecourse']);
     Route::get('/take-lession', [TakeController::class, 'takelesson']);
@@ -44,6 +59,9 @@ Route::group(['prefix' => 'student', 'middleware' => 'CheckStudent'], function (
 
     Route::get('/skill-assessment', [SkillController::class, 'skillassessment']);
     Route::get('/skill-result', [SkillController::class, 'skillresult']);
+
+    Route::post('/follow', [StudentController::class, 'follow'])->name('follow');
+    Route::post('/unfollow', [StudentController::class, 'unfollow'])->name('unfollow');
 });
 
 // Instructor router
@@ -94,20 +112,9 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/billing-invoice', [AccountController::class, 'billing_invoice']);
 });
 
-// Community router
-Route::group(['prefix' => 'community'], function () {
-    Route::get('/teachers', [CommunityController::class, 'teacher']);
-    Route::get('/teacher-profile', [CommunityController::class, 'teacher_profile']);
-    Route::get('/student', [CommunityController::class, 'student']);
-    Route::get('/blog', [CommunityController::class, 'blog']);
-    Route::get('/blog-post', [CommunityController::class, 'blog_post']);
-    Route::get('/faq', [CommunityController::class, 'faq']);
-    Route::get('/help-center', [CommunityController::class, 'helpcenter']);
-    Route::get('/discussions', [CommunityController::class, 'discussions']);
-    Route::get('/discussion', [CommunityController::class, 'discussion_detail']);
-    Route::get('/discussions-ask', [CommunityController::class, 'discussions_ask']);
+Route::group(['prefix' => 'notification'], function () {
+    Route::post('/mark-read', [NotificationController::class, 'readNotification']);
 });
-
 
 Route::get('/redirect/{social}', [AccountController::class, 'redirect'])->name('redirect');
 Route::get('/callback/{social}', [AccountController::class, 'callback'])->name('callback');

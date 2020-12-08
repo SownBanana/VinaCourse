@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label class="form-label" for="email">Username:</label>
                         <input id="username" name="username" type="text" value="{{ old('username') }}" class="form-control" onkeyup="isUsername('username')" placeholder="Username có thể dùng để đăng nhập ...">
-                        @if ($errors->has('username'))
+                        @if ($errors->has('username') || $errors->first() == 'username')
                             <small id="usernameHelp" class="form-text text-danger">Username đã được sử dụng.</small>
                         @endif
                     </div>

@@ -1,16 +1,32 @@
 @extends('layout.app')
-@section('active-coursepreview', 'active')
+@section('active-bcourse', 'active')
 @section('content')
-    <div class="mdk-box bg-primary js-mdk-box mb-0" data-effects="blend-background">
+@php
+    $instructor = App\Models\Account::find($course->instructor_id);
+    $isHaveThisCourse = App\Models\Student::find(Auth::user()->id)->courses()->where('course_id', $course->id)->exists();
+@endphp
+    <div class="mdk-box bg-black js-mdk-box mb-0" data-effects="blend-background" style="overflow: hidden;">
+        <div style="background-image: url({!! asset($course->thumbnail_url) !!}); background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            filter: blur(4px);
+            -webkit-filter: blur(4px);
+            opacity:0.5"></div>
         <div class="mdk-box__content">
             <div class="hero py-64pt text-center text-sm-left">
                 <div class="container page__container">
-                    <h1 class="text-white">Angular Fundamentals</h1>
-                    <p class="lead text-white-50 measure-hero-lead">It’s not every day that one of the most important front-end libraries in web development gets a complete overhaul. Keep your skills relevant and up-to-date with this comprehensive introduction to Google’s popular community project.</p>
-                    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start">
-                        <a href="student-lesson" class="btn btn-outline-white mb-16pt mb-sm-0 mr-sm-16pt">Watch trailer <i class="material-icons icon--right">play_circle_outline</i></a>
-                        <a href="pricing" class="btn btn-white">Start your free trial</a>
+                    <h1 class="text-white">{{ $course->name }}</h1>
+                    <div style="font-size: 1.2rem; color:white">
+                        {!! $course->introduce !!}
                     </div>
+                    @if ($isHaveThisCourse)
+                        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start">
+                            <a href="{{route('student_lesson', ['course_id'=>$course->id])}}" class="btn btn-outline-white mb-16pt mb-sm-0 mr-sm-16pt">Học ngay <i class="material-icons icon--right">play_circle_outline</i></a>
+                        </div>    
+                    @endif
                 </div>
             </div>
         </div>
@@ -22,21 +38,34 @@
                 <li class="nav-item navbar-list__item">
                     <div class="media align-items-center">
                         <span class="media-left mr-16pt">
-                            <img src="assets/images/people/50/guy-6.jpg" width="40" alt="avatar" class="rounded-circle">
+                            <img src="{!! asset($instructor->avatar_url) .'?'. time()  !!}" width="40" height="40" alt="avatar" class="rounded-circle">
                         </span>
                         <div class="media-body">
-                            <a class="card-title m-0" href="teacher-profile">Eddie Bryan</a>
-                            <p class="text-50 lh-1 mb-0">Instructor</p>
+                            <a class="card-title m-0" href="{{ route('get_user_home', ['username' => $instructor->username]) }}">{{$instructor->name}}</a>
+                            <p class="text-50 lh-1 mb-0">Giảng viên</p>
                         </div>
                     </div>
                 </li>
+                @php
+                    $totalTime = 0;
+                    $totalQuizzes = 0;
+                    $totalLessons = 0;
+                    foreach ($course->sections as $section) {
+                        // $totalLessons++;
+                        foreach ($section->lessons as $lesson) {
+                            $totalLessons++;
+                            $totalTime += 30;
+                        }
+                        $totalQuizzes += count($section->quizzes);
+                    }
+                @endphp
                 <li class="nav-item navbar-list__item">
                     <i class="material-icons text-muted icon--left">schedule</i>
-                    2h 46m
+                    {{ floor(($totalTime)*10)/10 }} phút
                 </li>
                 <li class="nav-item navbar-list__item">
                     <i class="material-icons text-muted icon--left">assessment</i>
-                    Beginner
+                    Programming
                 </li>
                 <li class="nav-item ml-sm-auto text-sm-center flex-column navbar-list__item">
                     <div class="rating rating-24">
@@ -56,100 +85,40 @@
         <div class="container page__container">
 
             <div class="page-separator">
-                <div class="page-separator__text">Table of Contents</div>
+                <div class="page-separator__text">Nội dung khoá học</div>
             </div>
             <div class="row mb-0">
                 <div class="col-lg-7">
 
 
                     <div class="accordion js-accordion accordion--boxed list-group-flush" id="parent">
-                        <div class="accordion__item">
-                            <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-1" data-parent="#parent">
-                                <span class="flex">Course Overview</span>
+
+                        @php
+                            $count=0;
+                        @endphp
+                        @foreach ($sections as $item)
+                        <div class="accordion__item @if ($count==0) echo "open"; @endif">
+                            <a href="#" class="accordion__toggle" data-toggle="collapse" data-target="#course-toc-{{ $item->id }}" data-parent="#parent">
+                                <span class="flex">{{ $item->name }}</span>
                                 <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                             </a>
-                            <div class="accordion__menu collapse" id="course-toc-1">
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-primary">play_circle_outline</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--dark rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">play_circle_outline</i>
-                                    </span>
-                                    <a class="flex" href="student-lesson">Watch Trailer</a>
-                                    <span class="text-muted">1m 10s</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion__item open">
-                            <a href="#" class="accordion__toggle" data-toggle="collapse" data-target="#course-toc-2" data-parent="#parent">
-                                <span class="flex">Getting Started with Angular</span>
-                                <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                            </a>
-                            <div class="accordion__menu collapse show" id="course-toc-2">
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-muted">lock</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--dark rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">check_circle</i>
-                                    </span>
-                                    <a class="flex" href="student-lesson">Introduction</a>
-                                    <span class="text-muted">8m 42s</span>
-                                </div>
+                            <div class="accordion__menu collapse @if ($count==0) show @endif"" id="course-toc-{{ $item->id }}">
+                                @foreach ($item->lessons as $lesson)
                                 <div class="accordion__menu-link active">
                                     <!-- <span class="material-icons icon-16pt icon--left text-muted">lock</span> -->
                                     <span class="icon-holder icon-holder--small icon-holder--primary rounded-circle d-inline-flex icon--left">
                                         <i class="material-icons icon-16pt">play_circle_outline</i>
                                     </span>
-                                    <a class="flex" href="student-lesson">Introduction to TypeScript</a>
-                                    <span class="text-muted">50m 13s</span>
+                                    <a class="flex" href="student-lesson">{{ $lesson->name }}</a>
+                                    <span class="text-muted">{{ $lesson->duration }}</span>
                                 </div>
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-muted">lock</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">lock</i>
-                                    </span>
-                                    <a class="flex" href="student-lesson">Comparing Angular to AngularJS</a>
-                                    <span class="text-muted">12m 10s</span>
-                                </div>
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-50">hourglass_empty</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">hourglass_empty</i>
-                                    </span>
-                                    <a class="flex" href="student-take-quiz">Quiz: Getting Started With Angular</a>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
-                        <div class="accordion__item">
-                            <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-3" data-parent="#parent">
-                                <span class="flex">Creating and Communicating Between Angular Components</span>
-                                <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                            </a>
-                            <div class="accordion__menu collapse" id="course-toc-3">
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-muted">lock</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">lock</i>
-                                    </span>
-                                    <a class="flex" href="student-lesson">Angular Components</a>
-                                    <span class="text-muted">04:23</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion__item">
-                            <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-4" data-parent="#parent">
-                                <span class="flex">Exploring the Angular Template Syntax</span>
-                                <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                            </a>
-                            <div class="accordion__menu collapse" id="course-toc-4">
-                                <div class="accordion__menu-link">
-                                    <!-- <span class="material-icons icon-16pt icon--left text-muted">lock</span> -->
-                                    <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
-                                        <i class="material-icons icon-16pt">lock</i>
-                                    </span>
-                                    <a class="flex" href="student-lesson">Template Syntax</a>
-                                    <span class="text-muted">04:23</span>
-                                </div>
-                            </div>
-                        </div>
+                        @php
+                            $count++;
+                        @endphp
+                        @endforeach
                     </div>
 
                 </div>
@@ -158,175 +127,54 @@
 
                     <div class="card">
                         <div class="card-body py-16pt text-center">
-                            <span class="icon-holder icon-holder--outline-secondary rounded-circle d-inline-flex mb-8pt">
-                                <i class="material-icons">timer</i>
-                            </span>
-                            <h4 class="card-title"><strong>Unlock Library</strong></h4>
-                            <p class="card-subtitle text-70 mb-24pt">Get access to all videos in the library</p>
-                            <a href="pricing" class="btn btn-accent mb-8pt">Sign Up - Only $19.00/mo</a>
-                            <p class="mb-0">Have an account? <a href="login">Login</a></p>
+                            @if ($isHaveThisCourse)
+                                <span class="icon-holder icon-holder--outline-secondary rounded-circle d-inline-flex mb-8pt">
+                                    <i class="material-icons">book</i>
+                                </span>
+                                <h4></h4>
+                                <a href="{{route('student_lesson', ['course_id'=>$course->id])}}" class="btn btn-accent mb-8pt">Truy cập khoá học</a>
+                            @else
+                                <span class="icon-holder icon-holder--outline-secondary rounded-circle d-inline-flex mb-8pt">
+                                    <i class="material-icons">timer</i>
+                                </span>
+                                <h4 class="card-title"><strong>Mở khoá khoá học</strong></h4>
+                                <p class="card-subtitle text-70 mb-2">Truy cập đến tất cả nội dung của khoá học này chỉ với</p>
+                                <a id="buy_course" course-id={{$course->id}} href="" class="btn btn-accent mb-8pt">{{number_format($course->price, 0, ' ', ',') }} VNĐ</a>
+                            @endif
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="page-section bg-white border-bottom-2">
-
-
-        <div class="container page__container">
-            <div class="row ">
-                <div class="col-md-7">
-                    <div class="page-separator">
-                        <div class="page-separator__text">About this course</div>
-                    </div>
-                    <p class="text-70">This course will teach you the fundamentals o*f working with Angular 2. You *will learn everything you need to know to create complete applications including: components, services, directives, pipes, routing, HTTP, and even testing.</p>
-                    <p class="text-70 mb-0">This course will teach you the fundamentals o*f working with Angular 2. You *will learn everything you need to know to create complete applications including: components, services, directives, pipes, routing, HTTP, and even testing.</p>
-                </div>
-                <div class="col-md-5">
-                    <div class="page-separator">
-                        <div class="page-separator__text bg-white">What you’ll learn</div>
-                    </div>
-                    <ul class="list-unstyled">
-                        <li class="d-flex align-items-center">
-                            <span class="material-icons text-50 mr-8pt">check</span>
-                            <span class="text-70">Fundamentals of working with Angular</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="material-icons text-50 mr-8pt">check</span>
-                            <span class="text-70">Create complete Angular applications</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="material-icons text-50 mr-8pt">check</span>
-                            <span class="text-70">Working with the Angular CLI</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="material-icons text-50 mr-8pt">check</span>
-                            <span class="text-70">Understanding Dependency Injection</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="material-icons text-50 mr-8pt">check</span>
-                            <span class="text-70">Testing with Angular</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <div class="page-section bg-white border-bottom-2">
         <div class="container">
             <div class="row">
                 <div class="col-md-7 mb-24pt mb-md-0">
-                    <h4>About the author</h4>
-                    <p class="text-70 mb-24pt">Eddie Bryan is a software developer at LearnD*ash. With more than 20 years o*f software development experience, he has gained a passion for Agile software development -- especially Lean.</p>
+                    <h4>Thông tin giảng viên</h4>
+                    <p class="text-70 mb-24pt">{!!App\Models\Instructor::find($course->instructor_id)->introduce!!}</p>
 
-                    <div class="page-separator">
-                        <div class="page-separator__text bg-white">More from the author</div>
-                    </div>
-
-
-
-
-                    <div class="card card-sm mb-8pt">
-                        <div class="card-body d-flex align-items-center">
-                            <a href="course" class="avatar avatar-4by3 mr-12pt">
-                                <img src="assets/images/paths/angular_routing_200x168.png" alt="Angular Routing In-Depth" class="avatar-img rounded">
-                            </a>
-                            <div class="flex">
-                                <a class="card-title mb-4pt" href="course">Angular Routing In-Depth</a>
-                                <div class="d-flex align-items-center">
-                                    <div class="rating mr-8pt">
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-
-                                    </div>
-                                    <small class="text-muted">3/5</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card card-sm mb-16pt">
-                        <div class="card-body d-flex align-items-center">
-                            <a href="course" class="avatar avatar-4by3 mr-12pt">
-                                <img src="assets/images/paths/angular_testing_200x168.png" alt="Angular Unit Testing" class="avatar-img rounded">
-                            </a>
-                            <div class="flex">
-                                <a class="card-title mb-4pt" href="course">Angular Unit Testing</a>
-                                <div class="d-flex align-items-center">
-                                    <div class="rating mr-8pt">
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-
-
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-
-                                    </div>
-                                    <small class="text-muted">4/5</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item px-0">
-                            <a href="" class="card-title mb-4pt">Angular Best Practices</a>
-                            <p class="lh-1 mb-0">
-                                <small class="text-muted mr-8pt">6h 40m</small>
-                                <small class="text-muted mr-8pt">13,876 Views</small>
-                                <small class="text-muted">13 May 2018</small>
-                            </p>
-                        </div>
-                        <div class="list-group-item px-0">
-                            <a href="" class="card-title mb-4pt">Unit Testing in Angular</a>
-                            <p class="lh-1 mb-0">
-                                <small class="text-muted mr-8pt">6h 40m</small>
-                                <small class="text-muted mr-8pt">13,876 Views</small>
-                                <small class="text-muted">13 May 2018</small>
-                            </p>
-                        </div>
-                        <div class="list-group-item px-0">
-                            <a href="" class="card-title mb-4pt">Migrating Applications from AngularJS to Angular</a>
-                            <p class="lh-1 mb-0">
-                                <small class="text-muted mr-8pt">6h 40m</small>
-                                <small class="text-muted mr-8pt">13,876 Views</small>
-                                <small class="text-muted">13 May 2018</small>
-                            </p>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-5 pt-sm-32pt pt-md-0 d-flex flex-column align-items-center justify-content-start">
                     <div class="text-center">
+                        @csrf
                         <p class="mb-16pt">
-                            <img src="assets/images/people/110/guy-6.jpg" alt="guy-6" class="rounded-circle" width="64">
+                            <img src="{!! asset($instructor->avatar_url) .'?'. time() !!}" alt="guy-6" class="rounded-circle" width="80" height="80cd ..">
                         </p>
-                        <h4 class="m-0">Eddie Bryan</h4>
-                        <p class="lh-1">
+                        <h4 class="m-0 mb-2">{{ $instructor->name }}</h4>
+                        {{-- <p class="lh-1">
                             <small class="text-muted">Angular, Web Development</small>
-                        </p>
+                        </p> --}}
                         <div class="d-flex flex-column flex-sm-row align-items-center justify-content-start">
-                            <a href="teacher-profile" class="btn btn-outline-primary mb-16pt mb-sm-0 mr-sm-16pt">Follow</a>
-                            <a href="teacher-profile" class="btn btn-outline-secondary">View Profile</a>
+                            @if (App\Models\Student::find(Auth::user()->id)->isFollowing($instructor->id))
+                                <a instructor-id={{$instructor->id}} class="btn btn-outline-secondary mb-16pt mb-sm-0 mr-sm-16pt follow">Bỏ theo dõi
+                            @else
+                                <a instructor-id={{$instructor->id}} class="btn btn-outline-secondary mb-16pt mb-sm-0 mr-sm-16pt follow">Theo dõi
+                            @endif
+                            </a>
+                            <a href="{{ route('get_user_home', ['username' => $instructor->username])}}" class="btn btn-outline-secondary">Profile</a>
                         </div>
                     </div>
                 </div>
@@ -334,112 +182,6 @@
         </div>
     </div>
 
-    <div class="page-section border-bottom-2">
-        <div class="container">
-            <div class="page-headline text-center">
-                <h2>Feedback</h2>
-                <p class="lead text-70 measure-lead mx-auto">What other students turned professionals have to say about us after learning with us and reaching their goals.</p>
-            </div>
-
-
-
-            <div class="position-relative carousel-card col-lg-8 p-0 mx-auto">
-                <div class="row d-block js-mdk-carousel" id="carousel-feedback">
-                    <a class="carousel-control-next js-mdk-carousel-control mt-n24pt" href="#carousel-feedback" role="button" data-slide="next">
-                        <span class="carousel-control-icon material-icons" aria-hidden="true">keyboard_arrow_right</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                    <div class="mdk-carousel__content">
-
-                        <div class="col-12 col-md-6">
-
-                            <div class="card card-feedback card-body">
-                                <blockquote class="blockquote mb-0">
-                                    <p class="text-70 small mb-0">A wonderful course on how to start. Eddie beautifully conveys all essentials of a becoming a good Angular developer. Very glad to have taken this course. Thank you Eddie Bryan.</p>
-                                </blockquote>
-                            </div>
-                            <div class="media ml-12pt">
-                                <div class="media-left mr-12pt">
-                                    <a href="student-profile" class="avatar avatar-sm">
-                                        <!-- <img src="assets/images/people/110/guy-.jpg" width="40" alt="avatar" class="rounded-circle"> -->
-                                        <span class="avatar-title rounded-circle">UK</span>
-                                    </a>
-                                </div>
-                                <div class="media-body media-middle">
-                                    <a href="student-profile" class="card-title">Umberto Kass</a>
-                                    <div class="rating mt-4pt">
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-12 col-md-6">
-
-                            <div class="card card-feedback card-body">
-                                <blockquote class="blockquote mb-0">
-                                    <p class="text-70 small mb-0">A wonderful course on how to start. Eddie beautifully conveys all essentials of a becoming a good Angular developer. Very glad to have taken this course. Thank you Eddie Bryan.</p>
-                                </blockquote>
-                            </div>
-                            <div class="media ml-12pt">
-                                <div class="media-left mr-12pt">
-                                    <a href="student-profile" class="avatar avatar-sm">
-                                        <!-- <img src="assets/images/people/110/guy-.jpg" width="40" alt="avatar" class="rounded-circle"> -->
-                                        <span class="avatar-title rounded-circle">UK</span>
-                                    </a>
-                                </div>
-                                <div class="media-body media-middle">
-                                    <a href="student-profile" class="card-title">Umberto Kass</a>
-                                    <div class="rating mt-4pt">
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-12 col-md-6">
-
-                            <div class="card card-feedback card-body">
-                                <blockquote class="blockquote mb-0">
-                                    <p class="text-70 small mb-0">A wonderful course on how to start. Eddie beautifully conveys all essentials of a becoming a good Angular developer. Very glad to have taken this course. Thank you Eddie Bryan.</p>
-                                </blockquote>
-                            </div>
-                            <div class="media ml-12pt">
-                                <div class="media-left mr-12pt">
-                                    <a href="student-profile" class="avatar avatar-sm">
-                                        <!-- <img src="assets/images/people/110/guy-.jpg" width="40" alt="avatar" class="rounded-circle"> -->
-                                        <span class="avatar-title rounded-circle">UK</span>
-                                    </a>
-                                </div>
-                                <div class="media-body media-middle">
-                                    <a href="student-profile" class="card-title">Umberto Kass</a>
-                                    <div class="rating mt-4pt">
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star</span></span>
-                                        <span class="rating__item"><span class="material-icons">star_border</span></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="page-section bg-white border-bottom-2">
 

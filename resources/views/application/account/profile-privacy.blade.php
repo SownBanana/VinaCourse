@@ -53,8 +53,8 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label">Luma profile name</label>
-            <input type="text" class="form-control" value="Luma.com/alexander" placeholder="Your profile name ...">
+            <label class="form-label">VinaCourse profile name</label>
+            <input type="text" class="form-control" value="VinaCourse.com/alexander" placeholder="Your profile name ...">
             <small class="form-text text-muted">Your profile name will be used as part of your public profile URL address.</small>
         </div>
 
@@ -100,7 +100,7 @@
 
 
             <a href="index" class="sidebar-brand ">
-                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                 <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -108,7 +108,7 @@
 
                 </span>
 
-                <span>Luma</span>
+                <span>VinaCourse</span>
             </a>
 
 

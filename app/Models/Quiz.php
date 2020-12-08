@@ -13,8 +13,17 @@ class Quiz extends Model
     {
         return $this->belongsTo('App\Models\Section');
     }
-    public function answer()
+    public function answers()
     {
         return $this->hasMany('App\Models\Answer');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($quiz) {
+            $quiz->answers()->delete();
+        });
     }
 }

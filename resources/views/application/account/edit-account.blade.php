@@ -58,7 +58,7 @@
                 <input type="file"  accept="image/*" name="avatar" id="avatar"  onchange="loadFile(event)" style="display: none;">
                 <label class="form-label" for="avatar" style="cursor: pointer;">Avatar</label>
                 <br>    
-                <img id="output_thumbnail" style="max-width:80%;margin: auto;display: block;"/>
+                <img id="output_thumbnail" style="max-width:80%;margin: auto;display: block;" src="{!!asset(Auth::user()->avatar_url) .'?'. time() !!}"/>
                 <img id="old_thumbnail" style="max-width:80%;margin: auto;display: block;" src=""/>
                 <div class="mt-2 text-center">
                     <label class="btn btn-light form-label" for="avatar" style="cursor: pointer;">Chọn ảnh</label>

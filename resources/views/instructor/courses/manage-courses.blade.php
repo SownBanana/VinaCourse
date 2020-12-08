@@ -1,9 +1,15 @@
 @extends('layout.app')
 @section('active-manage_courses', 'active')
+@section('page')
+    | {{ Auth::user()->username}} - Manage course
+@endsection
 @section('content')
 <script>
     var courses = {!! $courses->toJson() !!};
     console.log(courses);
+    var deleteSections = [];
+    var deleteLessons = [];
+    var deleteQuizzes = [];
 </script>
 <div class="pt-32pt">
     <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
@@ -79,8 +85,8 @@
                             <input type="file"  accept="image/*" name="image" id="course_thumbnail"  onchange="loadFile(event)" style="display: none;">
                             <label class="form-label" for="course_thumbnail" style="cursor: pointer;">Ảnh Thumbnail</label>
                             <br>
-                            <img id="output_thumbnail" style="max-width:100%;" />
-                            <img id="old_thumbnail" style="max-width:100%;" />
+                            <img id="output_thumbnail" style="max-width:100%;margin: auto;display: block;" />
+                            <img id="old_thumbnail" style="max-width:100%;margin: auto;display: block;" />
                             <div class="mt-2 text-center">
                                 <label class="btn btn-light form-label" for="course_thumbnail" style="cursor: pointer;">Chọn ảnh</label>
                             </div>
@@ -91,8 +97,10 @@
                             
                             <div class="form-group mb-0">
                                 <label class="form-label" for="select_topic">Chủ đề</label>
+                                <br>
                                 <ul class="d-flex topic_list">
                                 </ul>
+                                <input class="form-control mb-1" id="search_topic" type="text" placeholder="Tìm kiếm..">
                                 <select id="select_topic" size="7" data-toggle="select" multiple class="form-control">
                                     @foreach ($topics as $topic)
                                         <option topic_id='{{ $topic->id }}'>{{ $topic->name }}</option>
@@ -119,19 +127,11 @@
                             <a id="saveCourse" class="btn btn-accent whiteButton">Lưu thay đổi</a>
                         </div>
                         <div class="list-group list-group-flush">
-                            {{-- <div class="list-group-item d-flex">
-                                <a class="flex" href="#"><strong>Save Draft</strong></a>
-                                <i class="material-icons text-muted">check</i>
-                            </div> --}}
-                            <div class="list-group-item">
-                                <a href="#" class="text-danger"><strong>Xoá khoá học</strong></a>
-                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-
         </div>
     </div>
 </div>

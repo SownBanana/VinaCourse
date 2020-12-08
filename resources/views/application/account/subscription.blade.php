@@ -99,7 +99,7 @@
 
 
             <a href="index" class="sidebar-brand ">
-                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                 <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -107,7 +107,7 @@
 
                 </span>
 
-                <span>Luma</span>
+                <span>VinaCourse</span>
             </a>
 
 

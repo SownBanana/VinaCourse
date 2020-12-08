@@ -35,13 +35,13 @@
 
 <div class="page-section container page__container">
     <div class="page-separator">
-        <div class="page-separator__text">Updates from Luma</div>
+        <div class="page-separator__text">Updates from VinaCourse</div>
     </div>
     <div class="col-lg-8 p-0">
         <div class="form-group">
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" checked id="customCheck1">
-                <label class="custom-control-label" for="customCheck1">Luma Newsletter</label>
+                <label class="custom-control-label" for="customCheck1">VinaCourse Newsletter</label>
                 <small class="form-text text-muted">Get the latest on company news.</small>
             </div>
         </div>
@@ -94,7 +94,7 @@
 
 
             <a href="index" class="sidebar-brand ">
-                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                 <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -102,7 +102,7 @@
 
                 </span>
 
-                <span>Luma</span>
+                <span>VinaCourse</span>
             </a>
 
 

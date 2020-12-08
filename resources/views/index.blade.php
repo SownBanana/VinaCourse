@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Luma</title>
+    <title>VinaCourse</title>
     <!-- Prevent the demo from appearing in search engines -->
     <meta name="robots" content="noindex">
 
@@ -66,7 +66,7 @@
 
                     <!-- Navbar Brand -->
                     <a href="fixed-index" class="navbar-brand mr-16pt">
-                        <!-- <img class="navbar-brand-icon" src="assets/images/logo/white-100@2x.png" width="30" alt="Luma"> -->
+                        <!-- <img class="navbar-brand-icon" src="assets/images/logo/white-100@2x.png" width="30" alt="VinaCourse"> -->
 
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
 
@@ -74,7 +74,7 @@
 
                         </span>
 
-                        <span class="d-none d-lg-block">Luma</span>
+                        <span class="d-none d-lg-block">VinaCourse</span>
                     </a>
 
                     <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
@@ -1456,7 +1456,7 @@
 
 
                 <a href="fixed-index" class="sidebar-brand ">
-                    <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="Luma"> -->
+                    <!-- <img class="sidebar-brand-icon" src="assets/images/illustration/student/128/white.svg" alt="VinaCourse"> -->
 
                     <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -1464,7 +1464,7 @@
 
                     </span>
 
-                    <span>Luma</span>
+                    <span>VinaCourse</span>
                 </a>
 
 

@@ -50,9 +50,9 @@ class AccountController extends Controller
     }
     public function getUser($username)
     {
-        $account = DB::table('accounts')->select('role')->where('username', $username)->first();
+        $account = Account::where('username', $username)->first();
         $role = 9;
-        if ($account!= null) {
+        if ($account != null) {
             $role = $account->role;
         }
         switch ($role) {
@@ -60,24 +60,12 @@ class AccountController extends Controller
                 return redirect()->route('student_dashboard', ['username' => $username]);
             }
             case UserRole::Instructor:{
-                return redirect()->route('instructor_dashboard', ['username' => $username]);
+                return view('instructor.dashboard.profile', ['account'=>$account,'instructor' => Instructor::find($account->id)]);
             }
             default:{
                 return redirect()->route('home');
             }
         }
-    }
-    public function isFieldExist($field, $value)
-    {
-        return Account::where($field, '=', $username)->first() != null;
-    }
-    public function isUsernameExist($username)
-    {
-        return isFieldExist('username', $username);
-    }
-    public function isEmailExist($email)
-    {
-        return isFieldExist('email', $email);
     }
 
     public function store(Request $request)
@@ -132,7 +120,7 @@ class AccountController extends Controller
             $account->confirmation_code = $confirmation_code;
             $account->save();
             dispatch(new SendVerifyEmail($account));
-            return response()->json(['status'=>'success','mss'=>'Đã gửi email xác thực cho '.$account->email]);
+            return response()->json(['status'=>'Thành công','mss'=>'Đã gửi email xác thực cho '.$account->email]);
         }
         return response()->json(['status'=>'error', 'mss'=>'Không tìm thấy thông tin đăng nhập '.$account->email]);
     }
@@ -163,10 +151,15 @@ class AccountController extends Controller
         // $pass = $request->password;
         if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
             //user sent their email
-            Auth::attempt(['email' => $login_info, 'password' => $request->password], $request->remember_me);
+            $user = Account::whereRaw('LOWER(email) = ?', $login_info)->first();
+        // Auth::attempt(['email' => $login_info, 'password' => $request->password], $request->remember_me);
         } else {
             //they sent their username instead
-            Auth::attempt(['username' => $login_info, 'password' => $request->password], $request->remember_me);
+            $user = Account::whereRaw('LOWER(username) = ?', $login_info)->first();
+            // Auth::attempt(['username' => $login_info, 'password' => $request->password], $request->remember_me);
+        }
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
         }
         if (Auth::check()) {
             if (Auth::user()->is_verified) {
@@ -185,11 +178,6 @@ class AccountController extends Controller
             Auth::logout();
             return response()->json(['status'=>'error_verify', 'mss'=>"Tài khoản chưa được xác thực.", 'email'=>$email]);
         }
-        if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
-            $user = Account::where('email', '=', $login_info)->first();
-        } else {
-            $user = Account::where('username', '=', $request->login)->first();
-        }
         if ($user == null) {
             return response()->json(['status'=>'error_info', 'mss'=>"Không tìm thấy thông tin đăng nhập."]);
         } else {
@@ -203,6 +191,10 @@ class AccountController extends Controller
     }
     public function postsignup(Request $request)
     {
+        $account = Account::whereRaw('LOWER(username) = ?', $request->username)->first();
+        if ($account) {
+            return redirect()->back()->withErrors(['username','Username đã được sử dụng'])->withInput();
+        }
         $rules = array(
             'name'=>'bail|required|string|min:2|',
             'username'=>'bail|required|string|min:2|unique:accounts',
@@ -224,7 +216,7 @@ class AccountController extends Controller
     {
         return view('application.account.signup-payment');
     }
-    
+
     public function change_password(Request $request)
     {
         return view('application.account.reset-password', ['code'=>$request->code]);
@@ -248,9 +240,9 @@ class AccountController extends Controller
     {
         $login_info = $request->email;
         if (filter_var($login_info, FILTER_VALIDATE_EMAIL)) {
-            $account = Account::where('email', '=', $login_info)->first();
+            $account = Account::whereRaw('LOWER(email) = ?', $login_info)->first();
         } else {
-            $account = Account::where('username', '=', $login_info)->first();
+            $account = Account::whereRaw('LOWER(username) = ?', $login_info)->first();
         }
         if ($account == null) {
             return response()->json(['status'=>'error', 'mss'=>"Không tìm thấy thông tin đăng nhập."]);

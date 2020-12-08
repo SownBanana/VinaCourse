@@ -4,6 +4,7 @@ namespace App\Services;
 use Laravel\Socialite\Contracts\User as ProviderUser;
 use App\Models\SocialAccount;
 use App\Models\Account;
+use App\Models\Student;
 
 class SocialAccountService
 {
@@ -18,11 +19,14 @@ class SocialAccountService
         } else {
             $email = $providerUser->getEmail();
             $username = $providerUser->getNickname();
+            if (!$username) {
+                $username = $email;
+            }
             $account = new SocialAccount([
                 'provider_user_id' => $providerUser->getId(),
                 'provider' => $social
             ]);
-            $user = Account::whereEmail($email)->first();
+            $user = Account::whereRaw('LOWER(email) = ?', $email)->first();
             if (!$user) {
                 $user = Account::where('username', $username)->first();
                 if ($user) {
@@ -35,13 +39,18 @@ class SocialAccountService
                     'username' => $username,
                     'name' => $providerUser->getName(),
                     'password' => $providerUser->getName(),
+                    'avatar_url' => $providerUser->getAvatar(),
                     'role' => 3,
                 ]);
             }
-
             $account->user()->associate($user);
             $account->save();
 
+            $student = new Student;
+            $student->account()->associate($user);
+            $student->account_id = $user->id;
+            // $account->user()->associate($user);
+            $student->save();
             return $user;
         }
     }

@@ -4,7 +4,7 @@ $(document).ready(function() {
     "closeButton": true,
     "debug": false,
     "newestOnTop": true,
-    "progressBar": true,
+    "progressBar": false,
     "positionClass": "toast-top-right",
     "preventDuplicates": true,
     "onclick": null,
@@ -84,6 +84,7 @@ $(document).ready(function() {
         wait_server();
         var checkValid = true;
         var course ={};
+        var videoId = 0;
         var formData = new FormData();
         course.id = $("#edit_course").attr("course_id");
         course.name = $('#course_name').val().trim();
@@ -124,10 +125,14 @@ $(document).ready(function() {
                 lesson.duration = $(this).find('.lesson_length').text();
                 lesson.info = $(this).find('.lesson_info').find('.ql-editor').html();
                 lesson.url = $(this).find('.lesson_url').val();
+                if($(this).find('.video').val()) {
+                    formData.append('video'+videoId, $(this).find('.video')[0].files[0]);
+                    lesson.video = 'video'+videoId++;
+                }
                 section.lessons.push(lesson);
                 // lesson = {};
             });
-            debugger
+            // debugger
         if(section.lessons.length == 0){
                 toastr.warning("Vui lòng thêm bài học cho khoá học " + section.name + "!");
                 checkValid = false;
@@ -148,7 +153,6 @@ $(document).ready(function() {
                     answer.id = $(this).attr("answer-id");
                     answer.isAnswer = $(this).find('input.isAnswer').is(':checked');
                     answer.content = $(this).find('input.ans_content').val().trim();
-                    debugger
                     if(answer.content != null && answer.content != "")
                         quiz.answers.push(answer);
                 });
@@ -171,7 +175,10 @@ $(document).ready(function() {
         }
         // formData.append('course', course);
         appendFormdata(formData, course);
-        
+        appendFormdata(formData, deleteSections, 'deleteSections');
+        appendFormdata(formData, deleteLessons, 'deleteLessons');
+        appendFormdata(formData, deleteQuizzes, 'deleteQuizzes');
+        debugger
         $.ajaxSetup({
             headers: {
                 // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -254,6 +261,7 @@ $(document).ready(function() {
 });
 
 function appendFormdata(FormData, data, name){
+    debugger
     name = name || '';
     if (typeof data === 'object'){
         $.each(data, function(index, value){
@@ -315,7 +323,7 @@ function sendVerify(ele, e){
             type: "GET",
             data: {},
             success: function (data) {
-                toastr.success(data, "Lỗi");
+                toastr.success(data.mss, data.status);
                 stop_wait_server();
             },
             error: function (data){
@@ -344,3 +352,61 @@ function handleLogin(msg) {
         $('#passwordHelp').text(msg.mss);
     }
 }
+
+$(document).on('click', '.follow', function(e){
+    e.preventDefault();
+    var instructor_id = $(this).attr('instructor-id');
+    cmd = $(this).text().trim();
+    if( cmd == 'Theo dõi'){
+        var url = '/student/follow'
+        $(this).text('Bỏ theo dõi');
+        $(this).next().children().text(+$(this).next().children().text() + 1);
+    }else{
+        var url = '/student/unfollow'
+        $(this).text('Theo dõi');
+        $(this).next().children().text(+$(this).next().children().text() - 1);
+    }
+
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $("input[name='_token']").val()
+            }
+    });
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: {instructor_id:instructor_id},
+        success: function (data) {
+            toastr.success(data.mss, data.status);
+        },
+        error: function (data){
+            toastr.error(data.mss, "Lỗi");
+        }
+    });
+})
+
+
+$(document).on('click', '#buy_course', function(e){
+    e.preventDefault();
+    var course_id = $(this).attr('course-id');
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $("input[name='_token']").val()
+            }
+    });
+
+    $.ajax({
+        url: '/student/buy-course',
+        type: "POST",
+        data: {course_id:course_id},
+        success: function (data) {
+            toastr.success(data.mss, data.status);
+            window.location.reload(false); 
+        },
+        error: function (data){
+            toastr.error(data.mss, "Lỗi");
+        }
+    });
+})
+

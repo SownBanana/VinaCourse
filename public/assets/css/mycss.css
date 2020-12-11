@@ -261,3 +261,8 @@ button.text-btn:hover {
     transform: translateY(100%);
     animation: fade-in-up .4s ease forwards;
 }
+
+.video-gone {
+    visibility: hidden;
+    height: 0;
+}

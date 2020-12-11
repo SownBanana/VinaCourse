@@ -50,6 +50,8 @@ Route::group(['prefix' => 'student', 'middleware' => 'CheckStudent'], function (
     Route::get('/path-detail', [StudentController::class, 'pathdetail'])->name('path_detail');
     
     Route::post('/buy-course', [StudentController::class, 'buycourse'])->name('buy_course');
+    Route::post('/section-lesson', [StudentController::class, 'lessonCheckpoint'])->name('section_lesson');
+    Route::post('/section-score', [StudentController::class, 'sectionScore'])->name('section_score');
 
     Route::get('/take-course', [TakeController::class, 'takecourse']);
     Route::get('/take-lession', [TakeController::class, 'takelesson']);

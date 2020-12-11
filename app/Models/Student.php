@@ -17,7 +17,11 @@ class Student extends Model
     }
     public function courses()
     {
-        return $this->belongsToMany('App\Models\Course', 'course_student', 'student_id', 'course_id');
+        return $this->belongsToMany('App\Models\Course', 'course_student', 'student_id', 'course_id')->withPivot('progress', 'section_id');
+    }
+    public function sections()
+    {
+        return $this->belongsToMany('App\Models\Section', 'section_student', 'student_id', 'section_id')->withPivot('highest_point', 'lesson_id');
     }
     public function topics()
     {

@@ -17,6 +17,7 @@ class CreateCourseStudentTable extends Migration
             $table->integer('course_id');
             $table->integer('student_id');
             $table->float('progress')->default(0.0);
+            $table->integer('section_id')->nullable();
             $table->timestamps();
         });
     }

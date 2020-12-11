@@ -105,6 +105,7 @@ function activeContent(content_id) {
     removeAllActiveContent();
     $("#" + content_id).addClass("active");
 }
+
 function manageCourse() {
     activeContent("manage_course");
     $(".breadcrumb").empty();

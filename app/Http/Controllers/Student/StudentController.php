@@ -29,6 +29,9 @@ class StudentController extends Controller
     public function course_preview($id)
     {
         $course = Course::where('id', $id)->first();
+        if (!$course) {
+            return redirect()->route('browse-course');
+        }
         $sections = Section::where('course_id', $id)->orderBy('created_at', 'desc')->get();
         return view('student.course.course-preview', ['course' => $course, 'sections' => $sections]);
     }
@@ -76,8 +79,19 @@ class StudentController extends Controller
 
     public function lesson_preview(Request $request)
     {
-        $course = Course::where('id', $request->course_id)->with('sections.lessons', 'sections.quizzes.answers')->first();
-        return view('student.course.lesson-preview', ['course'=>$course]);
+        $student = Student::find(Auth::user()->id);
+        if ($student->courses()->where('course_id', $request->course_id)->exists()) {
+            $course = Course::where('id', $request->course_id)->with(array('sections.lessons', 'sections.quizzes.answers', 'sections.students'=>function ($query) {
+                $query->where('student_id', Auth::user()->id);
+            }))->first();
+            $initLesson = null;
+            $oldSectionId = $student->courses()->where('course_id', $request->course_id)->first()->pivot->section_id;
+            if ($oldSectionId) {
+                $initLesson = Lesson::find($student->sections()->where('section_id', $oldSectionId)->first()->pivot->lesson_id);
+            }
+            return view('student.course.lesson-preview', ['course'=>$course, 'initLesson'=>$initLesson]);
+        }
+        return redirect()->route('student_course', ['id' => $request->course_id]);
     }
 
     public function follow(Request $request)
@@ -89,5 +103,28 @@ class StudentController extends Controller
     {
         Student::find(Auth::user()->id)->unfollow($request->instructor_id);
         return response()->json(['status'=>'Thành công', 'mss'=>'Bạn đã bỏ follow người dùng']);
+    }
+
+    public function lessonCheckpoint(Request $request)
+    {
+        $student = Student::find(Auth::user()->id);
+        if ($student->courses()->where('course_id', $request->course_id)->exists()) {
+            $student->courses()->updateExistingPivot($request->course_id, ['section_id'=>$request->section_id]);
+            if (!$student->sections()->where('section_id', $request->section_id)->exists()) {
+                $student->sections()->attach($request->section_id);
+            }
+            $student->sections()->updateExistingPivot($request->section_id, ['lesson_id' => $request->lesson_id]);
+        }
+    }
+    public function sectionScore(Request $request)
+    {
+        $student = Student::find(Auth::user()->id);
+        if ($student->courses()->where('course_id', $request->course_id)->exists()) {
+            $student->courses()->updateExistingPivot($request->course_id, ['progress'=>$request->progress]);
+            if (!$student->sections()->where('section_id', $request->section_id)->exists()) {
+                $student->sections()->attach($request->section_id);
+            }
+            $student->sections()->updateExistingPivot($request->section_id, ['highest_point' => $request->score]);
+        }
     }
 }

@@ -13,8 +13,12 @@
         $avatar = Auth::user()->avatar_url;
         if(Auth::user()->role == App\Enums\UserRole::Instructor)
             $user = App\Models\Instructor::find(Auth::user()->id);
-        else
+        else if(Auth::user()->role == App\Enums\UserRole::Student)
             $user = App\Models\Student::find(Auth::user()->id);
+        else {
+            Auth::logout();
+            $user = null;
+        }
     }
     else {
         $avatar = null;

@@ -21,4 +21,8 @@ class Section extends Model
     {
         return $this->hasMany('App\Models\Quiz');
     }
+    public function students()
+    {
+        return $this->belongsToMany('App\Models\Student', 'section_student', 'section_id', 'student_id')->withPivot('highest_point', 'lesson_id');
+    }
 }

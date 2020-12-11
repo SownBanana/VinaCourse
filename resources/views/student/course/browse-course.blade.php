@@ -111,7 +111,10 @@
                                 @endif
 
                                 {{-- <a href={{ route('student_course', ['username' => Auth::user()->username, 'id' => $course->id]) }} class="btn btn-primary">Watch trailer</a> --}}
-                                <a href="/student/course-preview/{{ $course->id }}" class="btn btn-primary">Watch trailer</a>
+                                @if (App\Models\Student::find(Auth::user()->id)->courses()->where('course_id', $course->id)->exists())
+                                <a href="{{route('student_lesson', ['course_id'=>$course->id])}}" class="btn btn-primary">Vào học ngay</a>
+                                @endif
+                                <a href="/student/course-preview/{{ $course->id }}" class="btn btn-info">Xem khoá học</a>
 
                             </div>
                         </div>
@@ -248,8 +251,10 @@
                                     </div>
                                 @endif
 
-                                {{-- <a href={{ route('student_course', ['username' => Auth::user()->username, 'id' => $course->id]) }} class="btn btn-primary">Watch trailer</a> --}}
-                                <a href="/student/course-preview/{{ $course->id }}" class="btn btn-primary">Watch trailer</a>
+                                @if (App\Models\Student::find(Auth::user()->id)->courses()->where('course_id', $course->id)->exists())
+                                <a href="{{route('student_lesson', ['course_id'=>$course->id])}}" class="btn btn-primary">Vào học ngay</a>
+                                @endif
+                                <a href="/student/course-preview/{{ $course->id }}" class="btn btn-info">Xem khoá học</a>
 
                             </div>
                         </div>

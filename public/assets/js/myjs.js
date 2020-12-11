@@ -144,7 +144,7 @@ function hideAlert(alert) {
 
 $(window).scroll(function() {    
     var scroll = $(window).scrollTop();
-    console.log(scroll);
+    // console.log(scroll);
     if (scroll > 530) {
         // debugger
         $("#featured-media").addClass("is-sticky");

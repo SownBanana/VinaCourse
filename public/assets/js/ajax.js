@@ -23,7 +23,7 @@ $(document).ready(function() {
         $('#passwordHelp').text('');
         var login = $("#login").val();
         var password = $("#password").val();
-        var remember_me = $("#remember_me").val() == 'on';
+        var remember_me = $("#remember_me").is(":checked");
         if(login == "" || password == ""){
             toastr["error"]("Điền đầy đủ thông tin đăng nhập", "Lỗi");
             stop_wait_server()

@@ -62,4 +62,5 @@
     <script src="assets/js/ajax.js"></script>
     <script src="assets/js/notify.js"></script>
     <script src="assets/js/layout.js"></script>
+    <script src="assets/js/learn.js"></script>
     {{-- <script src="/js/app.js"></script> --}}

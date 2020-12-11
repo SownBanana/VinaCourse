@@ -38,7 +38,7 @@ class AccountController extends Controller
                     return redirect()->route('instructor_dashboard', ['username' => Auth::user()->username]);
                 }
                 case UserRole::Admin:{
-                    return redirect()->route('named_route', ['parameterKey' => 'value']);
+                    return redirect()->route('admin_home', ['username' => Auth::user()->username]);
                 }
                 default:{
                     return redirect()->route('home');
@@ -159,7 +159,7 @@ class AccountController extends Controller
             // Auth::attempt(['username' => $login_info, 'password' => $request->password], $request->remember_me);
         }
         if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user);
+            Auth::login($user, $request->remember_me);
         }
         if (Auth::check()) {
             if (Auth::user()->is_verified) {
@@ -171,6 +171,10 @@ class AccountController extends Controller
                 }
                 if (Auth::user()->role == UserRole::Student) {
                     return response()->json(['status'=>'success', 'mss'=>route('student_dashboard', ['username' => Auth::user()->username])]);
+                    // return redirect()->route('student_dashboard', ['username' => Auth::user()->username]);
+                }
+                if (Auth::user()->role == UserRole::Admin) {
+                    return response()->json(['status'=>'success', 'mss'=>route('admin_home', ['username' => Auth::user()->username])]);
                     // return redirect()->route('student_dashboard', ['username' => Auth::user()->username]);
                 }
             }

@@ -60,7 +60,16 @@
 
     <script src="assets/js/myjs.js"></script>
     <script src="assets/js/ajax.js"></script>
-    <script src="assets/js/notify.js"></script>
+    @if (Auth::check())
+        @if (Auth::user()->role == App\Enums\UserRole::Student)
+            <script src="assets/js/student-notify.js"></script>
+            <script src="assets/js/student.js"></script>
+        @elseif (Auth::user()->role == App\Enums\UserRole::Instructor)
+            <script src="assets/js/instructor-notify.js"></script>  
+            <script src="assets/js/instructor.js"></script>  
+        @endif
+    @endif
     <script src="assets/js/layout.js"></script>
-    <script src="assets/js/learn.js"></script>
+    {{-- <script src="assets/js/learn.js"></script> --}}
+    @yield('more-script')
     {{-- <script src="/js/app.js"></script> --}}

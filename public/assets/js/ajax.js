@@ -19,35 +19,66 @@ $(document).ready(function() {
     }
     $("#loginBtn").click(function(e) {
         e.preventDefault();
-        $('#usernameHelp').text('');
-        $('#passwordHelp').text('');
-        var login = $("#login").val();
-        var password = $("#password").val();
-        var remember_me = $("#remember_me").is(":checked");
-        if(login == "" || password == ""){
-            toastr["error"]("Điền đầy đủ thông tin đăng nhập", "Lỗi");
-            stop_wait_server()
-        }else{
-            $.ajaxSetup({
-                headers: {
-                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    'X-CSRF-TOKEN': $("input[name='_token']").val()
+        // debugger
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LcFjQQaAAAAAMybBuOQV3e86OOJKFIeJhSYqVhc', {action: 'login'}).then(function(token) {
+                // Add your logic to submit to your backend server here.
+                console.log(token);
+                $('#usernameHelp').text('');
+                $('#passwordHelp').text('');
+                var login = $("#login").val();
+                var password = $("#password").val();
+                var remember_me = $("#remember_me").is(":checked");
+                if(login == "" || password == ""){
+                    toastr["error"]("Điền đầy đủ thông tin đăng nhập", "Lỗi");
+                    stop_wait_server()
+                }else{
+                    $.ajaxSetup({
+                        headers: {
+                            // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            'X-CSRF-TOKEN': $("input[name='_token']").val()
+                        }
+                    });
+                    
+                    $.ajax({
+                        url: "/account/login",
+                        type: "POST",
+                        data: {login: login, password: password, remember_me: remember_me, captcha:token },
+                        success: function (data) {
+                            handleLogin(data);
+                        },
+                        error: function (data){
+                            toastr.error(data, "Lỗi");
+                            stop_wait_server();
+                        }
+                    });
                 }
             });
-            
-            $.ajax({
-                url: "/account/login",
-                type: "POST",
-                data: {login: login, password: password, remember_me: remember_me },
-                success: function (data) {
-                    handleLogin(data);
-                },
-                error: function (data){
-                    toastr.error(data, "Lỗi");
-                    stop_wait_server();
-                }
-            });
-        }
+        });
+    });
+    $("#request_change_password").click(function(e) {
+        e.preventDefault();
+        // $.ajaxSetup({
+        //     headers: {
+        //         // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         'X-CSRF-TOKEN': $("input[name='_token']").val()
+        //     }
+        // });
+        
+        $.ajax({
+            url: "/account/request-change-password",
+            type: "GET",
+            data: {},
+            success: function (data) {
+                console.log(data.mss);
+                toastr.success(data.mss);
+            },
+            error: function (data){
+                // alert("Lỗi: "+data.mss);
+                toastr.error(data.mss, "Lỗi");
+            }
+        });
     });
     $("#resetPswdBtn").click(function(e) {
         e.preventDefault();
@@ -280,30 +311,38 @@ function appendFormdata(FormData, data, name){
     Đoạn này hoạt đông được nhưng lỗi dynamically element không nhận
     jquery của thư viện material-disign-kit.js
 */
-// // Course paginate
-// $(document).on('click', '.page-link', function(e){
-//     e.preventDefault();
-//     var page = $(this).attr('href').split('page=')[1];
+// Hot Course paginate
+$(document).on('click', '.hotLink', function(e){
+    e.preventDefault();
+    if($(this).hasClass('selected_page')) return;
+    var page = $(this).attr('href').split('hotpage=')[1];
+    $('.simpleLoader').removeClass('hidden');
 
-//     $.ajaxSetup({
-//         headers: {
-//             // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//             'X-CSRF-TOKEN': $("input[name='_token']").val()
-//         }
-//     });
+    $.ajaxSetup({
+        headers: {
+            // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $("input[name='_token']").val()
+        }
+    });
     
-//     $.ajax({
-//         url: "/instructor/manage-courses?page=" + page,
-//         type: "GET",
-//         success: function (data) {
-//             console.log(data);
-//             $('#manage_course').html(data)
-//         },
-//         error: function (data){
-//             toastr.error(data, "Lỗi");
-//         }
-//     });
-// })
+    $.ajax({
+        url: "/student/browse-course?hotpage=" + page,
+        type: "GET",
+        success: function (data) {
+            console.log(data);
+            $('#stackHotCourse').html(data)
+            $('.simpleLoader').addClass('hidden');
+        },
+        error: function (data){
+            toastr.error(data, "Lỗi");
+        }
+    });
+
+    $('.hotLink').each(function(){
+        $(this).removeClass('selected_page');
+    })
+    $(this).addClass('selected_page');
+})
 
 function sendVerify(ele, e){
         // debugger
@@ -347,9 +386,11 @@ function handleLogin(msg) {
         $('#usernameHelp').text(msg.mss);
         $('#usernameHelp').append("<a id='verifyBtn' onclick='sendVerify(this, event)' href='/account/send-verify/"+msg.email+"'>&nbsp Gửi lại email xác thực</a>");
     }
-    else {
+    else if(msg.status == 'error_password'){
         stop_wait_server();
         $('#passwordHelp').text(msg.mss);
+    }else{
+        toastr.error(msg.mss);
     }
 }
 

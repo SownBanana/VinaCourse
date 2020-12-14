@@ -30,12 +30,12 @@
                     <div class="card">
                         <div class="row no-gutters align-items-center">
                             <div class="col-md-4">
-                                <img src="/admin/images/small/small-4.jpg" class="card-img" alt="...">
+                                <img src={{ asset($course[0]->thumbnail_url) }} class="card-img" alt="...">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <h5 class="card-title">{{ $course[0]->name }}</h5>
+                                    <p class="card-text">{!! $course[0]->introduce !!}</p>
                                     <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                                 </div> <!-- end card-body-->
 

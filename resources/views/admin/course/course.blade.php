@@ -32,10 +32,7 @@
                             <div class="row align-items-center">
                                 <div class="col-6">
                                     <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Campaign Sent">All Students</h5>
-                                    <h3 class="my-2 py-1">9,184</h3>
-                                    <p class="mb-0 text-muted">
-                                        <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 3.27%</span>
-                                    </p>
+                                    <h3 class="my-2 py-1">{{ $students }}</h3>
                                 </div>
                             </div> <!-- end row-->
                         </div>
@@ -48,10 +45,7 @@
                             <div class="row align-items-center">
                                 <div class="col-6">
                                     <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Campaign Sent">All Instructors</h5>
-                                    <h3 class="my-2 py-1">9,184</h3>
-                                    <p class="mb-0 text-muted">
-                                        <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 3.27%</span>
-                                    </p>
+                                    <h3 class="my-2 py-1">{{ $instructors }}</h3>
                                 </div>
                             </div> <!-- end row-->
                         </div>
@@ -64,10 +58,7 @@
                             <div class="row align-items-center">
                                 <div class="col-6">
                                     <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Campaign Sent">All Courses</h5>
-                                    <h3 class="my-2 py-1">9,184</h3>
-                                    <p class="mb-0 text-muted">
-                                        <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 3.27%</span>
-                                    </p>
+                                    <h3 class="my-2 py-1">{{ $course }}</h3>
                                 </div>
                             </div> <!-- end row-->
                         </div>
@@ -77,104 +68,36 @@
             <!-- end row-->
 
             <div class="row">
+                @foreach ($courses as $item)
                 <div class="col-md-6 col-lg-3">
                     <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
+                        <img src={{ asset($item->thumbnail_url) }} class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="/admin/course/detail" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
+                            <h5 class="card-title">{{ $item->name }}</h5>
+                            <a href="/admin/course/detail/{{ $item->id }}" class="btn btn-primary mt-2 stretched-link">View details</a>
                         </div> <!-- end card-body -->
                     </div> <!-- end card -->
                 </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="/admin/course/detail" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="/admin/course/detail" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="#" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="#" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="#" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="#" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="card">
-                        <img src="/admin/images/small/small-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Card with stretched link</h5>
-                            <a href="#" class="btn btn-primary mt-2 stretched-link">Go somewhere</a>
-                        </div> <!-- end card-body -->
-                    </div> <!-- end card -->
-                </div> <!-- end col-->
+                @endforeach
 
             </div>
             {{-- end row  --}}
 
             <nav>
                 <ul class="pagination pagination-rounded justify-content-center mb-0">
-                    <li class="page-item">
-                        <a class="page-link" href="javascript: void(0);" aria-label="Previous">
+                    <li class="page-item @if ($courses->currentPage() == 1) disabled @endif"">
+                        <a class="page-link" href="{{ route('all_courses') }}?page={{max($courses->currentPage() - 1, 1)}}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="javascript: void(0);">1</a></li>
-                    <li class="page-item"><a class="page-link" href="javascript: void(0);">2</a></li>
-                    <li class="page-item active"><a class="page-link" href="javascript: void(0);">3</a></li>
-                    <li class="page-item"><a class="page-link" href="javascript: void(0);">4</a></li>
-                    <li class="page-item"><a class="page-link" href="javascript: void(0);">5</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="javascript: void(0);" aria-label="Next">
+
+                    @for ($i = 1; $i <= $courses->lastPage(); $i++)
+                    <li class="page-item @if ($i == $courses->currentPage()) active @endif"><a class="page-link" href="{{ route('all_courses') }}?page={{$i}}">{{ $i }}</a></li>
+                    @endfor
+
+                    <li class="page-item @if ($courses->currentPage() == $courses->lastPage()) disabled @endif">
+                        <a class="page-link" href="{{ route('all_courses') }}?page={{ min($courses->currentPage() + 1, $courses->lastPage()) }}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">Next</span>
                         </a>

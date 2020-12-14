@@ -11,7 +11,7 @@ class NotificationController extends Controller
     {
         if ($request->has('notification_id')) {
             DatabaseNotification::find($request->notification_id)->delete();
-        } else {
+        } elseif ($request->has('course_id')) {
             DatabaseNotification::where('notifiable_id', $request->notifiable_id)->where('data', 'like', '%"course_id":'. $request->course_id .'%')->delete();
         }
     }

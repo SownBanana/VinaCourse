@@ -31,7 +31,7 @@ class InstructorController extends Controller
     public function manage_courses(Request $request)
     {
         if (Auth::check()) {
-            $courses = Course::where('instructor_id', Auth::user()->id)->with('topics')->orderBy('created_at', 'desc')->paginate(8);
+            $courses = Course::where('instructor_id', Auth::user()->id)->withCount('students')->with('topics')->orderBy('created_at', 'desc')->paginate(8);
             if ($request->ajax()) {
                 return view('layout.course-item', compact('courses'))->render();
             }
@@ -232,6 +232,9 @@ class InstructorController extends Controller
                 $newSection->course()->associate($newCourse);
                 $newSection->save();
             }
+            if ($course['id'] == "new") {
+                $newCourse->instructor()->associate(Auth::user()->id);
+            }
             $newCourse->save();
             DB::commit();
 
@@ -240,10 +243,11 @@ class InstructorController extends Controller
             } else {
                 $type = 'sửa';
             }
-            $followers = Instructor::find(Auth::user()->id)->followers()->get();
+            // $courseBuyers = $newCourse->students()->get();
+            $followers = Instructor::find(Auth::user()->id)->followers()->get()->merge($newCourse->students()->get());
             $notify = [
-                'instructor'=>Auth::user()->name,
-                'instructor_avatar'=>Auth::user()->avatar_url,
+                'notifyName'=>Auth::user()->name,
+                'avatar'=>Auth::user()->avatar_url,
                 'course_id'=>$newCourse->id,
                 'course_name'=>$newCourse->name,
                 'type'=>$type,

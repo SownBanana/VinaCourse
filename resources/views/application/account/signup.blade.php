@@ -109,9 +109,11 @@
 </div>
 <div class="page-section text-center">
     <div class="container page__container">
-        <a id="su_facebook" href="signup-payment" class="btn btn-secondary btn-block-xs">Facebook</a>
-        <a id="su_github" href="signup-payment" class="btn btn-secondary btn-block-xs">Github</a>
-        <a id="su_google" href="signup-payment" class="btn btn-secondary btn-block-xs">Google</a>
+        <div class="container page__container">
+            <a href="/redirect/facebook" class="btn btn-secondary btn-block-xs"id="su_facebook" onclick="wait_server()">Facebook</a>
+            <a href="/redirect/github" class="btn btn-secondary btn-block-xs"id="su_github" onclick="wait_server()">Github</a>
+            <a href="/redirect/google" class="btn btn-secondary btn-block-xs" id="su_google" onclick="wait_server()">Google</a>
+        </div>
     </div>
 </div>
 @endsection

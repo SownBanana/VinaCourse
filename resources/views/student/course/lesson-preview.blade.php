@@ -246,3 +246,6 @@
         </div>
     {{-- </div> --}}
 @endsection
+@section('more-script')
+<script src="assets/js/learn.js"></script>
+@endsection

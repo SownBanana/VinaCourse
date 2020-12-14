@@ -16,11 +16,11 @@ channel.bind('add-course-notify', function(data) {
             <span class="d-flex">
                 <span class="avatar avatar-xs mr-2">
                     <span class="avatar-title rounded-circle bg-light">
-                    <img src="${data.instructor_avatar}" alt="people" class="avatar-img rounded-circle">
+                    <img src="${data.avatar}" alt="people" class="avatar-img rounded-circle">
                     </span>
                 </span>
                 <span class="flex d-flex flex-column">
-                    <strong class="text-black-100">${data.instructor}</strong>
+                    <strong class="text-black-100">${data.notifyName}</strong>
                     <span class="text-black-70">Đã ${data.type} khoá học ${data.course_name}</span>
                 </span>
             </span>

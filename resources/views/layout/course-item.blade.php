@@ -18,8 +18,8 @@
                         @endif" alt="course">
                         <span class="overlay__content align-items-start justify-content-start">
                             <span class="overlay__action card-body d-flex align-items-center">
-                                <i class="material-icons mr-4pt">edit</i>
-                                <span class="card-title text-white">Sửa</span>
+                                <i class="material-icons mr-4pt">remove_red_eye</i>
+                                    <span class="card-title text-white">{{$course['students_count']}}</span>
                             </span>
                         </span>
                     </a>
@@ -32,15 +32,92 @@
                                 <a href="" class="ml-4pt material-icons text-black-20 card-course__icon-favorite">edit</a>
                             </div>
                             <div>{{number_format($course->price)}} VNĐ</div>
+                            @php
+                                $rate0 = 0;
+                                $rate1 = 0;
+                                $rate2 = 0;
+                                $rate3 = 0;
+                                $rate4 = 0;
+                                $rate5 = 0;
+                                foreach ($course['rates'] as $rate) {
+                                    $srate = $rate->rate;
+                                    switch ($srate) {
+                                        case 1:
+                                            $rate1 += 1;
+                                            break;
+                                        case 2:
+                                            $rate2 += 1;
+                                            break;
+                                        case 3:
+                                            $rate3 += 1;
+                                            break;
+                                        case 4:
+                                            $rate4 += 1;
+                                            break;
+                                        case 5:
+                                            $rate5 += 1;
+                                            break;
+                                        default:
+                                            $rate0 += 1;
+                                            break;
+                                    }
+                                }
+                                $totalRates = $rate1 + $rate2 + $rate3 + $rate4 + $rate5;
+                                if($totalRates > 0)
+                                    $avgRate = round (($rate1*1 + $rate2*2 + $rate3*3 + $rate4*4 + $rate5*5)*10/$totalRates)/10;
+                                else
+                                    $avgRate = 0;
+                            @endphp
                             <div class="d-flex">
                                 <div class="rating flex">
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-                                    <span class="rating__item"><span class="material-icons">star_border</span></span>
+                                    @if ($totalRates == 0)
+                                    <small class="text-muted">
+                                        Chưa có đánh giá nào!
+                                    </small>
+                                    @else
+                                    <span class="rating__item">
+                                        @if($avgRate >=1)
+                                        <span class="material-icons">star</span>
+                                        @else
+                                        <span class="material-icons">star_border</span>
+                                        @endif
+                                    </span>
+                                    <span class="rating__item"> @if($avgRate >=2)
+                                        <span class="material-icons">star</span>
+                                        @else
+                                        <span class="material-icons">star_border</span>
+                                        @endif</span>
+                                    <span class="rating__item"> @if($avgRate >=3)
+                                        <span class="material-icons">star</span>
+                                        @else
+                                        <span class="material-icons">star_border</span>
+                                        @endif</span>
+                                    <span class="rating__item"> @if($avgRate >=4)
+                                        <span class="material-icons">star</span>
+                                        @else
+                                        <span class="material-icons">star_border</span>
+                                        @endif</span>
+                                    <span class="rating__item"> @if($avgRate == 5)
+                                        <span class="material-icons">star</span>
+                                        @else
+                                        <span class="material-icons">star_border</span>
+                                        @endif</span>
+                                    @endif
                                 </div>
-                                <small class="text-black-50">6 hours</small>
+                                @php
+                                    $totalTime = 0;
+                                    $totalQuizzes = 0;
+                                    $totalLessons = 0;
+                                    foreach ($course->sections as $section) {
+                                        // $totalLessons++;
+                                        foreach ($section->lessons as $lesson) {
+                                            $totalLessons++;
+                                            $totalTime += 10;
+                                        }
+                                        $totalQuizzes += count($section->quizzes);
+                                    }
+                                @endphp
+                            <small class="text-50" >{{ floor(($totalTime/60)*10)/10 }} giờ</small>
                             </div>
                         </div>
                     </div>

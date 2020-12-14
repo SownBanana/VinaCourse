@@ -11,7 +11,8 @@
         </a>
     </li> --}}
     <li class="sidebar-menu-item @yield('active-bcourse')">
-        <a class="sidebar-menu-button" href="student/browse-course">
+        {{-- <a class="sidebar-menu-button" href="student/browse-course"> --}}
+        <a class="sidebar-menu-button" href="{{route('browse-course')}}">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">local_library</span>
             <span class="sidebar-menu-text">Khoá học</span>
         </a>
@@ -40,7 +41,7 @@
             <span class="sidebar-menu-text">Lộ trình của tôi</span>
         </a>
     </li>
-    <li class="sidebar-menu-item @yield('active-mquiz')">
+    {{-- <li class="sidebar-menu-item @yield('active-mquiz')">
         <a class="sidebar-menu-button" href="student/my-quizzes">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">poll</span>
             <span class="sidebar-menu-text">Quizzes</span>
@@ -51,7 +52,7 @@
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">assignment_turned_in</span>
             <span class="sidebar-menu-text">Kỹ năng</span>
         </a>
-    </li>
+    </li> --}}
 
 </ul>
 @endsection

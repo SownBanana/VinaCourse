@@ -3,7 +3,7 @@
 @section('content')
 <div class="pt-32pt pt-sm-64pt pb-32pt">
     <div class="container page__container">
-        <form class="col-md-5 p-0 mx-auto">
+        <form id="demo-form" class="col-md-5 p-0 mx-auto">
             @csrf
             {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
             <div class="form-group">
@@ -34,7 +34,7 @@
 </div>
 
 <div class="page-separator justify-content-center m-0">
-    <div class="page-separator__text">or sign-in with</div>
+    <div class="page-separator__text">Hoặc đăng nhập với</div>
 </div>
 <div class="bg-body pt-32pt pb-32pt pb-md-64pt text-center">
     <div class="container page__container">
@@ -44,4 +44,7 @@
     </div>
 </div>
 @include('layout.dialog.resetpassword')
+@endsection
+@section('script')
+<script src="https://www.google.com/recaptcha/api.js?render=6LcFjQQaAAAAAMybBuOQV3e86OOJKFIeJhSYqVhc"></script>
 @endsection

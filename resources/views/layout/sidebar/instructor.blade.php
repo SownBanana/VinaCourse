@@ -21,12 +21,12 @@
             <span class="sidebar-menu-text">Thu nhập</span>
         </a>
     </li>
-    <li class="sidebar-menu-item @yield('active-statement')">
+    {{-- <li class="sidebar-menu-item @yield('active-statement')">
         <a class="sidebar-menu-button" href="{{ route('statement') }}">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">receipt</span>
             <span class="sidebar-menu-text">Hoá đơn</span>
         </a>
-    </li>
+    </li> --}}
 </ul>
 @endsection
 

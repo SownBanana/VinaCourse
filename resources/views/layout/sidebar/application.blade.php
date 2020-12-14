@@ -8,7 +8,7 @@
         </a>
         <ul class="sidebar-submenu collapse sm-indent" id="account_menu">
             <li class="sidebar-menu-item">
-                <a class="sidebar-menu-button" href="/account/reset-password">
+                <a id="request_change_password" class="sidebar-menu-button" href="/account/request_change_password">
                     <span class="sidebar-menu-text">Đặt lại mật khẩu</span>
                 </a>
             </li>
@@ -18,7 +18,7 @@
                 </a>
             </li>
 
-            <li class="sidebar-menu-item">
+            {{-- <li class="sidebar-menu-item">
                 <a class="sidebar-menu-button" href="/account/edit-account-notifications">
                     <span class="sidebar-menu-text">Cài đặt thông báo</span>
                 </a>
@@ -33,12 +33,12 @@
                 <a class="sidebar-menu-button" href="/account/billing-history">
                     <span class="sidebar-menu-text">Lịch sử thanh toán</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </li>
 
 
-    <li class="sidebar-menu-item">
+    {{-- <li class="sidebar-menu-item">
         <a class="sidebar-menu-button" data-toggle="collapse" href="#community_menu">
             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">people_outline</span>
             Cộng đồng
@@ -63,5 +63,5 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> --}}
 </ul>

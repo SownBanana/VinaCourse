@@ -48,4 +48,6 @@
     
     <link type="text/css" href="assets/css/mycss.css" rel="stylesheet">
     <link type="text/css" href="assets/css/layout.css" rel="stylesheet">
+
+    @yield('script')
 </head>

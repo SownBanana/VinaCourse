@@ -147,7 +147,11 @@
                     <div class="dropdown-header"><strong>Thông báo</strong></div>
                     <div id="notify-list" class="list-group list-group-flush mb-0">
                     @foreach ($user->unreadNotifications as $notification)
+                        @if (Auth::user()->role == App\Enums\UserRole::Instructor)
+                        <a href="/instructor/manage-courses" notification-id={{$notification->id}} class="list-group-item list-group-item-action unread notification-item" >
+                        @else
                         <a href="/student/course-preview/{{$notification->data['course_id']}}" notification-id={{$notification->id}} class="list-group-item list-group-item-action unread notification-item" >
+                        @endif
                             <span class="d-flex align-items-center mb-1">
                                 <small class="text-black-50">{{$notification->created_at->diffForHumans()}}</small>
                                 <span class="ml-auto unread-indicator bg-accent"></span>
@@ -155,11 +159,11 @@
                             <span class="d-flex">
                                 <span class="avatar avatar-xs mr-2">
                                     <span class="avatar-title rounded-circle bg-light">
-                                    <img src="{{$notification->data['instructor_avatar']}}" alt="people" class="avatar-img rounded-circle">
+                                    <img src="{{$notification->data['avatar']}}" alt="people" class="avatar-img rounded-circle">
                                     </span>
                                 </span>
                                 <span class="flex d-flex flex-column">
-                                    <strong class="text-black-100">{{$notification->data['instructor']}}</strong>
+                                    <strong class="text-black-100">{{$notification->data['notifyName']}}</strong>
                                     <span class="text-black-70">Đã {{$notification->data['type']}} khoá học {{$notification->data['course_name']}}</span>
                                 </span>
                             </span>

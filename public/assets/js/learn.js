@@ -266,7 +266,8 @@ $(document).on('click', '.viewquiz', function(e){
     section_id = $(this).parent().parent().attr('section-id');
     section = getSection(section_id);
     if(currentLearn.type != 'quiz' || section_id != currentLearn.section_id){
-        if(!section.students[0].pivot.highest_point){
+        debugger
+        if(!section.students[0] || !section.students[0].pivot || !section.students[0].pivot.highest_point){
             userAnswers = [];
             removeAllActiveContent();
             $("#quiz-view").addClass("active");
@@ -361,7 +362,6 @@ $(document).on('click', '.next-quiz', function(e){
         quizIndex = 1;
         $(".result-container").html('');
         section.quizzes.forEach(quiz=>{
-            debugger
             var answerContainer = `
             <div class="border-left-2 page-section pl-32pt">
 
@@ -407,10 +407,11 @@ $(document).on('click', '.next-quiz', function(e){
         });
         
         console.log(point + "/" + numberOfQuiz);
-
-        readablePoint = round(point*10000/numberOfQuiz)/100
+        debugger
+        readablePoint = Math.ceil(point*10000/numberOfQuiz)/100
         $('.small-point').html(`<i class="material-icons text-muted icon--left">assessment</i>`+readablePoint + `/` + 100 + ` Điểm`);
         $('.large-point').html(`Bạn được ` + readablePoint + ` điểm`);
+        // if()
         if(readablePoint > section.students[0].pivot.highest_point){
             saveHighestScore(readablePoint);
             section.students[0].pivot.highest_point = readablePoint
@@ -489,10 +490,20 @@ $(document).on('click', '.next-learn', function(e){
             $("#lesson-view").addClass("active");
             fillViewWithLesson(next.section_id, next.id);
         }else{
+            section = getSection(next.section_id);
             $('.selectsection[section-id="'+next.section_id+'"]').addClass('active');
             $('.selectsection[section-id="'+next.section_id+'"] .viewquiz').addClass('active');
-            $("#quiz-view").addClass("active");
-            fillViewWithQuiz(next.section_id, next.id);
+
+            if(!section.students[0] || !section.students[0].pivot || !section.students[0].pivot.highest_point){
+                userAnswers = [];
+                $("#quiz-view").addClass("active");
+                fillViewWithQuiz(next.section_id, next.id);
+            }else{
+                $("#quiz-result").addClass("active");
+                $(".result-container").html('');
+                $('.small-point').html(`<i class="material-icons text-muted icon--left">assessment</i>`+(section.students[0].pivot.highest_point) + `/` + 100 + ` Điểm`);
+                $('.large-point').html(`Điểm cao nhất: ` + section.students[0].pivot.highest_point + ` điểm`);
+            }
         }
     }
 })
@@ -545,12 +556,12 @@ function lessonInSectionCheckPoint(){
 function saveHighestScore(score){
     var section_id = currentLearn.section_id;
     var course_id = course.id;
-    var progress = 0;
-    for (let sectionIndex = 1; sectionIndex < course.sections.length; sectionIndex++) {
-        if(course.sections[sectionIndex].id == section_id) {
-            progress = round((sectionIndex/course.sections.length)*10000)/100;
-        }
-    }
+    // var progress = 0;
+    // for (let sectionIndex = 1; sectionIndex < course.sections.length; sectionIndex++) {
+    //     if(course.sections[sectionIndex].id == section_id) {
+    //         progress = round((sectionIndex/course.sections.length)*10000)/100;
+    //     }
+    // }
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $("input[name='_token']").val()
@@ -560,7 +571,7 @@ function saveHighestScore(score){
     $.ajax({
         url: "/student/section-score",
         type: "POST",
-        data: {course_id:course_id, section_id: section_id, score:score, progress:progress},
+        data: {course_id:course_id, section_id: section_id, score:score},
         success: function (data) {
             console.log(data.mss);
         },

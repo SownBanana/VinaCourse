@@ -88,6 +88,18 @@ input.invalid:focus {
     margin-left: -1.75rem;
 }
 
+.simpleLoader {
+    display: block;
+    width: 1.2rem;
+    height: 1.2rem;
+    -webkit-animation: is-loading 1s linear infinite;
+    animation: is-loading 1s linear infinite;
+    border: 3px solid #4c90f0;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    background: transparent;
+}
+
 button.text-btn {
     border: none;
     background-color: unset;
@@ -265,4 +277,45 @@ button.text-btn:hover {
 .video-gone {
     visibility: hidden;
     height: 0;
+}
+
+
+
+.rating-star {
+    display: inline-flex;
+    flex-direction: row-reverse;
+}
+
+.rating-star input {
+    display: none;
+}
+
+.rating-star label {
+    color: #eee;
+}
+
+.rating-star label:before {
+    font-family: "Font Awesome 5 Free";
+    display: block;
+    font-size: 1.5rem;
+    padding: 0.3rem 0.2rem;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 900;
+    content: "\f005";
+    color: white;
+
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #f9c32c;
+}
+
+.rating-star input:checked~label:before {
+    text-shadow: 0px 0 5px rgba(255, 157, 180, 0.28);
+    -webkit-text-fill-color: #f9c32c;
+}
+
+.rating-star input:hover~label:before {
+    -webkit-text-stroke-color: #f9882c;
+    /* text-shadow: 0px 0 5px rgba(255, 157, 180, 0.28); */
+    text-shadow: 0px 0px 5px #edfc19;
 }

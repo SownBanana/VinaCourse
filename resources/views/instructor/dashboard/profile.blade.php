@@ -2,7 +2,7 @@
 {{-- @section('menu_button', 'd-lg-none') --}}
 @section('content')
 @php
-    $courses = App\Models\Course::where('instructor_id', $account->id)->get();
+    $courses = App\Models\Course::withCount('students')->where('instructor_id', $account->id)->get();
 @endphp
 <div class="page-section bg-primary">
     @csrf
@@ -55,43 +55,7 @@
     </div>
 
     <div class="row card-group-row mb-8pt">
-        @foreach ($courses as $course)
-            <div class="col-sm-6 card-group-row__col">
-                <div class="card card-sm card-group-row__card">
-                    <div class="card-body d-flex align-items-center">
-                        <a href="/student/course-preview/{{ $course->id }}" class="avatar avatar-4by3 overlay overlay--primary mr-12pt">
-                            @if ($course->thumbnail_url)
-                                <img src="{!!asset($course->thumbnail_url)!!}" alt="Angular Routing In-Depth" class="avatar-img rounded">
-                            @else
-                                <img src="assets/images/paths/angular_routing_200x168.png" alt="Angular Routing In-Depth" class="avatar-img rounded">
-                            @endif
-                            <span class="overlay__content"></span>
-                        </a>
-                        <div class="flex">
-                            <a class="card-title mb-4pt" href="/student/course-preview/{{ $course->id }}">{{$course->name}}</a>
-                            <div class="d-flex align-items-center">
-                                <div class="rating mr-8pt">
-
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-
-
-                                    <span class="rating__item"><span class="material-icons">star</span></span>
-
-                                    <span class="rating__item"><span class="material-icons">star_border</span></span>
-
-                                </div>
-                                <small class="text-muted">4/5</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-
+        @include('layout.simple-course-item');
     </div>
 @endsection
 

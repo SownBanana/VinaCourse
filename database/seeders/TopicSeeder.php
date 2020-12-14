@@ -14,13 +14,16 @@ class TopicSeeder extends Seeder
      */
     public function run()
     {
-        $baseTopics = ["Programming", "Java", "C/C++", "C#", "Laravel",
-        "PHP", "AI", "Machine Learning", "Computer Vision", "Science", "Life", "Art",
-        "Adobe", "Design", "Photoshop", "Illustrator", "Premiere", "Maths", "Physics"];
+        $baseTopics = ["Programming"=>"code", "Java"=>"code", "C/C++"=>"code", "C#"=>"code", "Laravel"=>"view_compact",
+        "PHP"=>"code", "AI"=>"poll", "Machine Learning"=>"timeline", "Computer Vision"=>"poll", "Data Science"=>"timeline",
+        "Science"=>"school", "Life"=>"face", "Art"=>"brush",
+        "Adobe"=>"crop_original", "Design"=>"brush", "Photoshop"=>"crop_original", "Illustrator"=>"brush", "Premiere"=>"crop_original",
+        "Maths"=>"import_contacts", "Physics"=>"import_contacts"];
 
-        for ($i = 0; $i < count($baseTopics); $i++) {
+        foreach ($baseTopics as $key => $value) {
             DB::table('topics')->insert([
-                'name' => $baseTopics[$i]
+                'name' => $key,
+                'icon' => $value
             ]);
         }
     }

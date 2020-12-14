@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="form-group mb-24pt">
-            <label class="form-label" for="password">Nhập lại mật khẩu:</label>
+            <label class="form-label" for="repassword">Nhập lại mật khẩu:</label>
             <input id="repassword" type="password" class="form-control" onkeyup="isPassConfirmed('password','repassword')" placeholder="Nhập lại mật khẩu của bạn ...">
         </div>
         <button onclick="return validateForm()" class="btn btn-primary" type="submit" name="submit">Đổi mật khẩu</button>

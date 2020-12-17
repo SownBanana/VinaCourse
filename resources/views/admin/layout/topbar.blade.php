@@ -91,69 +91,19 @@
             </div>
         </li>
 
-        <li class="dropdown notification-list d-none d-sm-inline-block">
-            <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <i class="dripicons-view-apps noti-icon"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg p-0">
-
-                <div class="p-2">
-                    <div class="row no-gutters">
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/slack.png" alt="slack">
-                                <span>Slack</span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/github.png" alt="Github">
-                                <span>GitHub</span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/dribbble.png" alt="dribbble">
-                                <span>Dribbble</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="row no-gutters">
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/bitbucket.png" alt="bitbucket">
-                                <span>Bitbucket</span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/dropbox.png" alt="dropbox">
-                                <span>Dropbox</span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a class="dropdown-icon-item" href="#">
-                                <img src="/admin/images/brands/g-suite.png" alt="G Suite">
-                                <span>G Suite</span>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </li>
-
         <li class="dropdown notification-list">
             <a class="nav-link dropdown-toggle nav-user arrow-none mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
                 aria-expanded="false">
                 <span class="account-user-avatar">
-                    <img src="/admin/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                    @if (Auth::user()->avatar_url)
+                        <img src="{!!asset(Auth::user()->avatar_url) .'?'. time() !!}" alt="user-image" class="rounded-circle"/>
+                    @else
+                        <img src="/admin/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                    @endif
                 </span>
                 <span>
-                    <span class="account-user-name">Dominic Keller</span>
-                    <span class="account-position">Founder</span>
+                    <span class="account-user-name">@if (Auth::check()) {{Auth::user()->name}} @endif</span>
+                    <span class="account-position">@if (Auth::check() && Auth::user()->role == 1) admin @endif</span>
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -169,7 +119,7 @@
                 </a>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                <a href={{ route('logout') }} class="dropdown-item notify-item">
                     <i class="mdi mdi-logout mr-1"></i>
                     <span>Logout</span>
                 </a>

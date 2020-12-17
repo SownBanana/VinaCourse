@@ -147,22 +147,26 @@ class AccountController extends Controller
         if (Auth::check()) {
             Auth::logout();
         }
-        if ($request->captcha) {
-            $secret   = '6LcFjQQaAAAAAI4U1LuYdozXaixCEeYgsZHKZt_r';
-            $response = file_get_contents(
-                "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $request->captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
-            );
-            // use json_decode to extract json response
-            $response = json_decode($response);
-
-            if ($response->success === false) {
-                //Do something with error
+        //for dev
+        $disableCaptcha = true;
+        if (!$disableCaptcha) {
+            if ($request->captcha) {
+                $secret   = '6LcFjQQaAAAAAI4U1LuYdozXaixCEeYgsZHKZt_r';
+                $response = file_get_contents(
+                    "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $request->captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
+                );
+                // use json_decode to extract json response
+                $response = json_decode($response);
+    
+                if ($response->success === false) {
+                    //Do something with error
+                    return response()->json(['status'=>'token_error', 'mss'=>"Lỗi captcha."]);
+                }
+            } else {
                 return response()->json(['status'=>'token_error', 'mss'=>"Lỗi captcha."]);
             }
-        } else {
-            return response()->json(['status'=>'token_error', 'mss'=>"Lỗi captcha."]);
         }
-        if ($response->success==true && $response->score >= 0.5) {
+        if ($disableCaptcha || $response->success==true && $response->score >= 0.5) {
             //Do something to denied access
             $login_info = $request->login;
             // $pass = $request->password;

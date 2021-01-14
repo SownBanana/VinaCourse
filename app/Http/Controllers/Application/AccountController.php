@@ -20,7 +20,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use App\Services\SocialAccountService;
-use Socialite;
+use Laravel\Socialite\Facades\Socialite;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
@@ -157,7 +157,7 @@ class AccountController extends Controller
                 );
                 // use json_decode to extract json response
                 $response = json_decode($response);
-    
+
                 if ($response->success === false) {
                     //Do something with error
                     return response()->json(['status'=>'token_error', 'mss'=>"Lỗi captcha."]);

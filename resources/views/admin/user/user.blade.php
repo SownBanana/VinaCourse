@@ -50,8 +50,9 @@
                                     <td>
                                         <!-- Switch-->
                                         <div>
-                                            <input type="checkbox" id="switch{{ $item->id }}" checked data-switch="success"/>
-                                            <label for="switch{{ $item->id }}" data-on-label="Yes" data-off-label="No" class="mb-0 d-block"></label>
+                                            {{-- <input type="checkbox" id="switch{{ $item->id }}" checked data-switch="success"/>
+                                            <label for="switch{{ $item->id }}" data-on-label="Yes" data-off-label="No" class="mb-0 d-block"></label> --}}
+                                            <a href="{{ route('user') }}/del/{{ $item->id }}" class="action-icon"> <i class="mdi mdi-delete"></i></a>
                                         </div>
                                     </td>
                                 </tr>

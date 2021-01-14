@@ -40,8 +40,8 @@
                                 </div> <!-- end card-body-->
 
                                 <div class="card-body">
-                                    <button type="button" class="btn btn-warning"><i class="mdi mdi-rocket mr-1"></i> <span>View Course</span> </button>
-                                    <button type="button" class="btn btn-info"><i class="mdi mdi-account-circle mr-1"></i> <span>Chrise Envale - Instructor</span> </button>
+                                    <a href="#" class="btn btn-info"><i class="mdi mdi-account-circle mr-1"></i> <span>{{ App\Models\Account::find($course[0]->instructor_id)->name }} - Instructor</span> </a>
+                                    <a href="/admin/course/del/{{ $course[0]->id }}" class="btn btn-danger"><i class="mdi mdi-delete mr-1"></i> <span>Delete course</span> </a>
                                 </div>
                             </div> <!-- end col -->
                         </div> <!-- end row-->
@@ -50,7 +50,7 @@
             </div>
             <!-- end row -->
 
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12 col-lg-12">
                     <table class="table table-striped table-centered mb-0">
                         <thead>
@@ -62,6 +62,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($course->students() as $item)
                             <tr>
                                 <td class="table-user">
                                     <img src="/admin/images/users/avatar-2.jpg" alt="table-user" class="mr-2 rounded-circle" />
@@ -70,94 +71,10 @@
                                 <td>AC336 508 2157</td>
                                 <td>July 24, 1950</td>
                                 <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
                                     <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-3.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Ann C. Thompson
-                                </td>
-                                <td>SB646 473 2057</td>
-                                <td>January 25, 1959</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-4.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Paul J. Friend
-                                </td>
-                                <td>DL281 308 0793</td>
-                                <td>September 1, 1939</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-5.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Sean C. Nguyen
-                                </td>
-                                <td>CA269 714 6825</td>
-                                <td>February 5, 1994</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-2.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Risa D. Pearson
-                                </td>
-                                <td>AC336 508 2157</td>
-                                <td>July 24, 1950</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-3.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Ann C. Thompson
-                                </td>
-                                <td>SB646 473 2057</td>
-                                <td>January 25, 1959</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-4.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Paul J. Friend
-                                </td>
-                                <td>DL281 308 0793</td>
-                                <td>September 1, 1939</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-user">
-                                    <img src="/admin/images/users/avatar-5.jpg" alt="table-user" class="mr-2 rounded-circle" />
-                                    Sean C. Nguyen
-                                </td>
-                                <td>CA269 714 6825</td>
-                                <td>February 5, 1994</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-pencil"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -183,7 +100,7 @@
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </div> --}}
             <!-- end row -->
 
         </div>

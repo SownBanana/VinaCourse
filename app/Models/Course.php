@@ -16,7 +16,6 @@ class Course extends Model
     public function students()
     {
         return $this->belongsToMany('App\Models\Student', 'course_student', 'course_id', 'student_id')->withPivot('progress', 'section_id');
-        ;
     }
 
     public function rates()

@@ -78,7 +78,7 @@
                     <i class="material-icons text-muted icon--left">remove_red_eye</i>
                     {{$course['students_count']}}
                 </li>
-                <li class="nav-item ml-sm-auto text-sm-center flex-column navbar-list__item">
+                {{-- <li class="nav-item ml-sm-auto text-sm-center flex-column navbar-list__item">
                     <div class="rating rating-24">
                         <div class="rating__item"><i class="material-icons">star</i></div>
                         <div class="rating__item"><i class="material-icons">star</i></div>
@@ -87,7 +87,7 @@
                         <div class="rating__item"><i class="material-icons">star_border</i></div>
                     </div>
                     <p class="lh-1 mb-0"><small class="text-muted">20 ratings</small></p>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>
@@ -404,7 +404,7 @@
                         <span class="sr-only">Next</span>
                     </a>
 
-                    <div class="mdk-carousel__content">
+                    <div class="mdk-carousel__content nowidth">
 
                         @foreach ($courses as $item)
                         <div class="col-md-6 col-lg-4 col-xl-3 card-group-row__col">

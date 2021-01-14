@@ -32,7 +32,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'CheckAdmin'], function () {
     Route::get('/home', [AdminController::class, 'getIndex'])->name('admin_home');
     Route::get('/allcourses', [AdminController::class, 'allCourse'])->name(('all_courses'));
     Route::get('/user-account', [AdminController::class, 'getUser'])->name('user');
+    Route::get('/user-account/del/{id}', [AdminController::class, 'delUser']);
     Route::get('/course/detail/{id}', [AdminController::class, 'getCourseDetail'])->name('course_detail');
+    Route::get('/course/del/{id}', [AdminController::class, 'delCourse']);
 });
 
 Route::group(['middleware' => 'CheckStudent'], function () {
@@ -54,9 +56,9 @@ Route::group(['prefix' => 'student', 'middleware' => 'CheckStudent'], function (
 
     Route::post('/follow', [StudentController::class, 'follow'])->name('follow');
     Route::post('/unfollow', [StudentController::class, 'unfollow'])->name('unfollow');
-    
+
     Route::get('/search', [StudentController::class, 'search'])->name('search');
-    
+
     Route::post('/rate-course', [StudentController::class, 'rateCourse'])->name('rate_course');
 });
 

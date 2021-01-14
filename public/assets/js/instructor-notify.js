@@ -1,4 +1,4 @@
-var pusher = new Pusher('b2761ff8680dd8b15fbc', {
+var pusher = new Pusher('7c790707ecb2f7364872', {
     encrypted: true,
     cluster: "ap1"
 });
@@ -42,16 +42,16 @@ $(document).on('click', '.notification-item', function(e){
                 'X-CSRF-TOKEN': $("input[name='_token']").val()
             }
         });
-            
+
         $.ajax({
             url: '/notification/mark-read',
             type: "POST",
             data: {notification_id:notification_id},
             success: function (data) {
-                
+
             },
             error: function (data){
-                
+
             }
         });
     }else{
@@ -62,16 +62,16 @@ $(document).on('click', '.notification-item', function(e){
                 'X-CSRF-TOKEN': $("input[name='_token']").val()
             }
         });
-            
+
         $.ajax({
             url: '/notification/mark-read',
             type: "POST",
             data: {notifiable_id:notifiable_id, course_id:course_id},
             success: function (data) {
-                
+
             },
             error: function (data){
-                
+
             }
         });
     }
